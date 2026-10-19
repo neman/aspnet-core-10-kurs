@@ -1,0 +1,16 @@
+@baseUrl = http://localhost:5100
+
+### Home page
+GET {{baseUrl}}/
+
+### Public list: Aurora, Sentinel
+GET {{baseUrl}}/Heroes
+
+### Registered hero: 200
+GET {{baseUrl}}/Heroes/Details/1
+
+### Draft hero: 404
+GET {{baseUrl}}/Heroes/Details/3
+
+### Unknown hero: 404
+GET {{baseUrl}}/Heroes/Details/999
