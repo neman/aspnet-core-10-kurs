@@ -6,3 +6,4 @@ logs/
 .idea/
 *.user
 *.suo
+*.db

@@ -17,9 +17,9 @@ The course covers ASP.NET Core 10, but all lab code also runs on .NET 9, so the 
 | `Modul-1/Presentation/` | Day 1 | Module 1 slides as a single HTML file; open it in a browser, works offline |
 | `Modul-1/Lab-01-DI/` | Day 1, 09:45–10:15 | Dependency injection: Email/SMS selection through a factory, and DI lifetimes |
 | `Modul-1/Lab-02-Middleware/` | Day 1, 11:12–11:47 | Custom middleware, an extension method, and execution order |
-| `Modul-2/Lab-01-MVC-Heroes/` | Day 2, 09:30–10:15 | Controller, ViewModel, strongly typed views and layout: hero list and details |
-| `Modul-2/Lab-02-Form-Validation/` | Day 2, 10:50–11:35 | New hero form, validation, antiforgery and Post/Redirect/Get |
-| `Modul-2/Optional/` | Day 2, 12:00–13:00 | Optional self-paced tasks: editing a Draft hero, View Component, client-side validation, styling and static files |
+| `Modul-2/Lab-01-MVC-Heroes/` | Day 2, 09:35–10:19 | Controller, ViewModel, strongly typed views and layout: hero list and details |
+| `Modul-2/Lab-02-Form-Validation/` | Day 2, 10:54–11:38 | New hero form, validation, antiforgery and Post/Redirect/Get |
+| `Modul-2/Optional/` | Day 2, 12:00–13:00 | Optional self-paced tasks: editing a Draft hero, View Component, client-side validation, styling and static files, an action filter |
 
 Each lab folder has its instructions in `README.md` and the project in a subfolder. Every lab starts from its own starter, so none depends on whether the previous one was finished. Reference solutions are published in the `Solution/` folder after the lab.
 
