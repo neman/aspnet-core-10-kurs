@@ -73,7 +73,7 @@ Check: both key endpoints work, the scoped `InstanceMarker` gives `Same: true` w
 - The build fails: check the `InvokeAsync` signature and whether `_next(context)` is called.
 - Different GUIDs are not an error in themselves. What matters is the `Same` field and the chosen lifetime.
 
-The reference solution is in `Resenje/` in this folder. Nobody depends on finishing this exercise to start Module 2.
+The reference solution is in `Solution/` in this folder. Nobody depends on finishing this exercise to start Module 2.
 
 ## Optional (12:00–13:00)
 
@@ -82,7 +82,7 @@ The reference solution is in `Resenje/` in this folder. Nobody depends on finish
 - **C — Request duration:** `RequestLoggingMiddleware` measures the duration with `Stopwatch` and logs `{ElapsedMs}`.
 - **D — Serilog:** logs go to the console and to a text file.
 
-Each task below has steps, a check, and a reference solution. Pick one and finish it. **Starting state** for all of them: your `CourseApi` from this lab or the reference solution from `Resenje/`.
+Each task below has steps, a check, and a reference solution. Pick one and finish it. **Starting state** for all of them: your `CourseApi` from this lab or the reference solution from `Solution/`.
 
 **All additional tasks are optional.** The required session ends at 12:00; the instructor does not have to be present until 13:00. Tomorrow everyone uses the separate `HeroRegistry` starter.
 
@@ -278,7 +278,7 @@ public sealed class RequestLoggingMiddleware
 
 **Goal:** logs go to the console and to a file through Serilog, while `OrderService` and `RequestLoggingMiddleware` don't change a single line. The code writes to `ILogger<T>`, and the provider decides where the entry ends up.
 
-**Starting state:** your `CourseApi` from this lab or the reference solution from `Resenje/`. The NuGet package requires internet access.
+**Starting state:** your `CourseApi` from this lab or the reference solution from `Solution/`. The NuGet package requires internet access.
 
 ### Steps
 

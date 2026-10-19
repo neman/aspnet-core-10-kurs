@@ -6,4 +6,4 @@ Complete the tasks in `../README.md`. Start with Email/SMS, then explore `Instan
 
 To start: `dotnet run`. Check `http://localhost:5100/health` and `http://localhost:5100/orders/confirm`.
 
-If stuck when the lab ends, compare with `../Resenje/` (published after the lab); do not create a new project.
+If stuck when the lab ends, compare with `../Solution/` (published after the lab); do not create a new project.

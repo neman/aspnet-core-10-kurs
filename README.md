@@ -19,7 +19,7 @@ Lab materials for the ASP.NET Core 10 course (Belgrade, October 2026).
 | `Modul-2/Lab-02-Form-Validation/` | Day 2, 10:50–11:35 | New hero form, validation, antiforgery and Post/Redirect/Get |
 | `Modul-2/Optional/` | Day 2, 12:00–13:00 | Optional self-paced tasks: editing a Draft hero, View Component, client-side validation, styling and static files |
 
-Each lab folder has its instructions in `README.md` and the project in a subfolder. Every lab starts from its own starter, so none depends on whether the previous one was finished. Reference solutions are published in the `Resenje/` folder after the lab.
+Each lab folder has its instructions in `README.md` and the project in a subfolder. Every lab starts from its own starter, so none depends on whether the previous one was finished. Reference solutions are published in the `Solution/` folder after the lab.
 
 ## Running a project
 
