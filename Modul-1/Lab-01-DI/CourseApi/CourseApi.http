@@ -1,11 +1,11 @@
-# Pokretanje: F5 u Visual Studiu ili `dotnet run` (profil iz Properties/launchSettings.json)
+# Run: F5 in Visual Studio or `dotnet run` (profile from Properties/launchSettings.json)
 @baseUrl = http://localhost:5100
 
 ### Health: 200 {"status":"OK"}
 GET {{baseUrl}}/health
 
-### Zadaci 1-3: 200 "Order confirmed", konzola: Email: ... ili SMS: ...
+### Tasks 1-3: 200 "Order confirmed", console: Email: ... or SMS: ...
 GET {{baseUrl}}/orders/confirm
 
-### Zadatak 4: { first, second, same }; pozovi dvaput za svaki lifetime (pre zadatka 4: 404)
+### Task 4: { first, second, same }; call twice for each lifetime (before Task 4: 404)
 GET {{baseUrl}}/di/lifetime

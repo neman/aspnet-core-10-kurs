@@ -1,14 +1,14 @@
-# Pokretanje: F5 u Visual Studiu ili `dotnet run` (profil iz Properties/launchSettings.json)
+# Run: F5 in Visual Studio or `dotnet run` (profile from Properties/launchSettings.json)
 @baseUrl = http://localhost:5100
 
 ### Health: 200 {"status":"OK"}
 GET {{baseUrl}}/health
 
-### Okruženje Development: 200 "Order confirmed", konzola: SMS: Order confirmed
+### Development environment: 200 "Order confirmed", console: SMS: Order confirmed
 GET {{baseUrl}}/orders/confirm
 
-### Scoped InstanceMarker: Same = true unutar zahteva
+### Scoped InstanceMarker: Same = true within a request
 GET {{baseUrl}}/di/lifetime
 
-### Endpoint bez middleware logova dok ne uradiš zadatak A
+### Endpoint without middleware logs until you finish Task A
 GET {{baseUrl}}/pipeline-demo

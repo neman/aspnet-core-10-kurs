@@ -73,7 +73,7 @@ Check: both key endpoints work, the scoped `InstanceMarker` gives `Same: true` w
 - The build fails: check the `InvokeAsync` signature and whether `_next(context)` is called.
 - Different GUIDs are not an error in themselves. What matters is the `Same` field and the chosen lifetime.
 
-The reference solution is in `Solution/` in this folder. Nobody depends on finishing this exercise to start Module 2.
+The reference solution for tasks A–C is in `Solution/` in this folder; the optional tasks below are not included. Nobody depends on finishing this exercise to start Module 2.
 
 ## Optional (12:00–13:00)
 

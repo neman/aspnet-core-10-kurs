@@ -63,4 +63,4 @@ Add a `MarkerCache` class that receives `InstanceMarker` through the constructor
 
 Done when you can explain both outcomes. After the bonus, restore `Program.cs` or remove `AddSingleton<MarkerCache>()`, because otherwise the application does not start in the Development environment.
 
-**Important:** the reference solution is in `Solution/` in this folder. The bonus is not required for the rest of the course, and the middleware lab starts from its own starter.
+**Important:** the reference solution for tasks 1–4 is in `Solution/` in this folder; the bonus is not included. The bonus is not required for the rest of the course, and the middleware lab starts from its own starter.
