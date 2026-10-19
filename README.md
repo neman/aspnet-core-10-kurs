@@ -14,9 +14,9 @@ Materijal za vežbe kursa ASP.NET Core 10 (Beograd, oktobar 2026).
 |---|---|---|
 | `Modul-1/Lab-01-DI/` | Dan 1, 09:45–10:15 | Dependency injection: Email/SMS izbor kroz factory i DI lifetimes |
 | `Modul-1/Lab-02-Middleware/` | Dan 1, 11:12–11:47 | Sopstveni middleware, extension metoda i redosled izvršavanja |
-| `Modul-2/Lab-01-MVC-Heroji/` | Dan 2, 09:30–10:15 | Kontroler, ViewModel, strongly typed view-ovi i layout: lista i detalji heroja |
-| `Modul-2/Lab-02-Forma-Validacija/` | Dan 2, 10:50–11:35 | Forma za novog heroja, validacija, antiforgery i Post/Redirect/Get |
-| `Modul-2/Opciono/` | Dan 2, 12:00–13:00 | Opcioni samostalni zadaci: izmena Draft heroja, View Component, klijentska validacija |
+| `Modul-2/Lab-01-MVC-Heroes/` | Dan 2, 09:30–10:15 | Kontroler, ViewModel, strongly typed view-ovi i layout: lista i detalji heroja |
+| `Modul-2/Lab-02-Form-Validation/` | Dan 2, 10:50–11:35 | Forma za novog heroja, validacija, antiforgery i Post/Redirect/Get |
+| `Modul-2/Optional/` | Dan 2, 12:00–13:00 | Opcioni samostalni zadaci: izmena Draft heroja, View Component, klijentska validacija, stil i statički fajlovi |
 
 U svakom lab folderu uputstvo je u `README.md`, a projekat u podfolderu. Svaki lab počinje od sopstvenog startera, pa nijedan ne zavisi od toga da li je prethodni završen. Referentna rešenja se objavljuju u folderu `Resenje/` posle lab-a.
 
