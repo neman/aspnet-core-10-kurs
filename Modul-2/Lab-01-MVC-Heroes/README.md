@@ -43,14 +43,96 @@ Seed data: Sentinel (1, Registered), Aurora (2, Registered), Shadowling (3, Draf
 
 **Check:** `/Heroes` shows Aurora and Sentinel, in that order.
 
+<details>
+<summary>Hint (open only if you're stuck)</summary>
+
+The action maps each `Hero` to a ViewModel. `Registered()` needs `using HeroRegistry.Models;`.
+
+```csharp
+public sealed class HeroesController(IHeroStore store) : Controller
+{
+    public IActionResult Index()
+    {
+        var heroes = store.Heroes.Registered()
+            .Select(h => new HeroListItemViewModel(h.Id, h.Codename))
+            .ToList();
+
+        return View(heroes);
+    }
+}
+```
+
+Until task 3 adds `_ViewImports.cshtml`, `@model` needs the full namespace:
+
+```cshtml
+@model IReadOnlyList<HeroRegistry.ViewModels.HeroListItemViewModel>
+
+<h1>Registered heroes</h1>
+
+@* if the list is empty, a message; otherwise: *@
+<ul>
+    @foreach (var hero in Model)
+    {
+        <li>@hero.Codename</li>
+    }
+</ul>
+```
+
+</details>
+
 ## Task 2 — hero details
 
 1. Create `ViewModels/HeroDetailsViewModel` with `Id`, `Codename`, `OriginStory`, `Race`, `Alignment`, and a list of power names.
 2. The `Details(int id)` action looks up the hero with `store.Heroes.Registered().FirstOrDefault(h => h.Id == id)`. For a missing or Draft hero it gets `null` and returns `NotFound()`; otherwise it passes the ViewModel to the view.
 3. Create `Views/Heroes/Details.cshtml`. Show the powers only if the hero has any.
-4. In the list from task 1, each hero becomes a link to its details.
+4. In the list from task 1, each hero becomes a link to its details. For now, write the address by hand (`href="/Heroes/Details/@hero.Id"`); in task 3 you replace it with a Tag Helper.
 
 **Check:** `/Heroes/Details/1` shows Sentinel with the Shield power; `/Heroes/Details/3` (Draft) and `/Heroes/Details/999` return **404**.
+
+<details>
+<summary>Hint (open only if you're stuck)</summary>
+
+`Race` and `Alignment` are enums, and `Powers` is a list of `Power` objects, so the ViewModel gets strings:
+
+```csharp
+public sealed record HeroDetailsViewModel(
+    int Id, string Codename, string OriginStory,
+    string Race, string Alignment, IReadOnlyList<string> Powers);
+```
+
+```csharp
+public IActionResult Details(int id)
+{
+    var hero = store.Heroes.Registered().FirstOrDefault(h => h.Id == id);
+    if (hero is null)
+        return NotFound();
+
+    return View(new HeroDetailsViewModel(
+        hero.Id, hero.Codename, hero.OriginStory,
+        hero.Race.ToString(), hero.Alignment.ToString(),
+        hero.Powers.Select(p => p.Name).ToList()));
+}
+```
+
+The link in the list, and the powers in `Details.cshtml`:
+
+```cshtml
+<li><a href="/Heroes/Details/@hero.Id">@hero.Codename</a></li>
+```
+
+```cshtml
+@if (Model.Powers.Count > 0)
+{
+    <ul>
+        @foreach (var power in Model.Powers)
+        {
+            <li>@power</li>
+        }
+    </ul>
+}
+```
+
+</details>
 
 ## Task 3 — layout
 
@@ -61,6 +143,56 @@ Seed data: Sentinel (1, Registered), Aurora (2, Registered), Shadowling (3, Draf
 5. Write links with Tag Helpers: `asp-controller`, `asp-action`, `asp-route-id` instead of a hand-written `href`.
 
 **Check:** every page has the same navigation; View Page Source starts with `<!doctype html>`; links still lead to the correct addresses.
+
+<details>
+<summary>Hint (open only if you're stuck)</summary>
+
+`Views/Shared/_Layout.cshtml`: the frame of every page. The content of the view goes where `@RenderBody()` is.
+
+```cshtml
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] — Superhero Registry</title>
+</head>
+<body>
+    <nav>
+        <a asp-controller="Home" asp-action="Index">Home</a> |
+        <a asp-controller="Heroes" asp-action="Index">Heroes</a>
+    </nav>
+    <main>
+        @RenderBody()
+    </main>
+</body>
+</html>
+```
+
+`Views/_ViewStart.cshtml` (directly in `Views/`, not in `Shared/`):
+
+```cshtml
+@{
+    Layout = "_Layout";
+}
+```
+
+`Views/Home/Index.cshtml` keeps only its content:
+
+```cshtml
+@{
+    ViewData["Title"] = "Home";
+}
+
+<h1>Superhero Registry</h1>
+```
+
+The link in the hero list, with Tag Helpers:
+
+```cshtml
+<li><a asp-action="Details" asp-route-id="@hero.Id">@hero.Codename</a></li>
+```
+
+</details>
 
 ## Task 4 — check
 
