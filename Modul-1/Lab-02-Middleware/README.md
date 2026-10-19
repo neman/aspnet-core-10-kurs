@@ -288,7 +288,7 @@ public sealed class RequestLoggingMiddleware
    dotnet add package Serilog.AspNetCore
    ```
 
-   Verified with `Serilog.AspNetCore` 10.0.0. The package already includes the Console and File sinks and reading settings from configuration, so no other packages are needed.
+   Verified with `Serilog.AspNetCore` 10.0.0, which also works on .NET 9. The package already includes the Console and File sinks and reading settings from configuration, so no other packages are needed.
 
 2. In `Program.cs`, add `using Serilog;`. Right after `WebApplication.CreateBuilder(args)`, register Serilog through `builder.Services.AddSerilog(...)` so that it reads its settings from configuration with `ReadFrom.Configuration(builder.Configuration)`.
 3. In `appsettings.json`, add a `"Serilog"` section:

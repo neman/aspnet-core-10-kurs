@@ -4,9 +4,11 @@ Lab materials for the ASP.NET Core 10 course (Belgrade, October 2026).
 
 ## Prerequisites
 
-- **.NET 10 SDK** — check with `dotnet --version` (expected `10.0.x`). `global.json` in the repository root selects the .NET 10 SDK even if a newer one is installed; if it reports that no compatible SDK was found, install the .NET 10 SDK.
-- an editor or IDE of your choice: Visual Studio with .NET 10 support, VS Code with C# Dev Kit, or Rider
+- **.NET 9 SDK** — check with `dotnet --version` in the repository folder (expected `9.0.x`). `global.json` in the repository root selects the .NET 9 SDK even if a newer one is installed; if it reports that no compatible SDK was found, install the .NET 9 SDK. It installs side by side with .NET 10.
+- an editor or IDE of your choice: Visual Studio 2022 version 17.12 or later, VS Code with C# Dev Kit, or Rider
 - `curl` or a browser to call the endpoints (in Windows PowerShell use `curl.exe`)
+
+The course covers ASP.NET Core 10, but all lab code also runs on .NET 9, so the projects target .NET 9 (`net9.0`) and open in Visual Studio 2022. If you use Visual Studio 2026 or .NET 10, keep your setup: install the .NET 9 SDK next to .NET 10 and leave the projects as they are.
 
 ## Structure
 
