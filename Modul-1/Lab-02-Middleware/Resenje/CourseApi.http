@@ -1,0 +1,14 @@
+# Pokretanje: F5 u Visual Studiu ili `dotnet run` (profil iz Properties/launchSettings.json)
+@baseUrl = http://localhost:5100
+
+### Health: 200 {"status":"OK"}
+GET {{baseUrl}}/health
+
+### Logovi: Before /orders/confirm → Inner before → Inner after → After 200
+GET {{baseUrl}}/orders/confirm
+
+### Scoped InstanceMarker: Same = true unutar zahteva
+GET {{baseUrl}}/di/lifetime
+
+### Isti middleware i za drugi endpoint
+GET {{baseUrl}}/pipeline-demo
