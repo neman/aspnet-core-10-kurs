@@ -1,20 +1,20 @@
-# Lab 02 — HTTP middleware u CourseApi (ASP.NET Core 10)
+# Lab 02 — HTTP middleware in CourseApi (ASP.NET Core 10)
 
-**Vreme:** 11:12–11:47 (35 minuta) · **Rad:** individualno ili u paru · **Početni kod:** `CourseApi/` u ovom folderu
+**Time:** 11:12–11:47 (35 minutes) · **Format:** individually or in pairs · **Starting code:** `CourseApi/` in this folder
 
-## Cilj
+## Goal
 
-Napraviti middleware koji piše logove pre i posle obrade HTTP zahteva, registrovati ga preko extension metode i objasniti kako se pipeline izvršava. Sačuvati rad postojećih servisa i endpoint-a.
+Build a middleware that writes logs before and after an HTTP request is processed, register it through an extension method, and explain how the pipeline executes. Keep the existing services and endpoints working.
 
-## Početno stanje
+## Starting state
 
-Starter već sadrži `OrderService`, izbor kanala Email/Sms preko `Notifications:Channel`, `ILogger<OrderService>` i DI lifetime primer. Postoje endpoint-i `GET /health`, `GET /orders/confirm`, `GET /orders/{id:int}/confirm`, `GET /di/lifetime` i `GET /pipeline-demo`.
+The starter already contains `OrderService`, Email/Sms channel selection through `Notifications:Channel`, `ILogger<OrderService>`, and the DI lifetime example. The endpoints are `GET /health`, `GET /orders/confirm`, `GET /orders/{id:int}/confirm`, `GET /di/lifetime` and `GET /pipeline-demo`.
 
-**Ne pravite novi projekat.** Ne morate završiti prvi DI lab da biste započeli ovaj.
+**Do not create a new project.** You don't need to finish the DI lab to start this one.
 
-## Pokretanje
+## Running
 
-U folderu starter projekta:
+In the starter project folder:
 
 ```bash
 cd Modul-1/Lab-02-Middleware/CourseApi
@@ -23,40 +23,40 @@ dotnet build
 dotnet run
 ```
 
-Ili otvori projekat u Visual Studiu i pokreni ga sa **F5**. Oba načina koriste profil iz `Properties/launchSettings.json`, pa je adresa ista: `http://localhost:5100`. Zahteve za proveru imaš i u `CourseApi/CourseApi.http`.
+Or open the project in Visual Studio and run it with **F5**. Both use the profile from `Properties/launchSettings.json`, so the address is the same: `http://localhost:5100`. The requests for checking are also in `CourseApi/CourseApi.http`.
 
-U drugom terminalu pozovite:
+In a second terminal, call:
 
 ```bash
 curl -i http://localhost:5100/health
 ```
 
-Na Windows PowerShell-u koristite `curl.exe` ako je `curl` alias za `Invoke-WebRequest`.
+In Windows PowerShell, use `curl.exe` if `curl` is an alias for `Invoke-WebRequest`.
 
-## Zadatak A — Middleware i extension metoda (oko 16 min)
+## Task A — Middleware and extension method (about 16 min)
 
-1. U zasebnom fajlu napravite `RequestLoggingMiddleware` klasu.
-2. Kroz konstruktor primite `RequestDelegate` i `ILogger<RequestLoggingMiddleware>`.
-3. U `InvokeAsync(HttpContext context)` zabeležite putanju zahteva u strukturisanom logu pre poziva sledeće komponente.
-4. Pozovite `await _next(context)`.
-5. Nakon toga zabeležite HTTP status odgovora.
-6. Napravite extension metodu `UseRequestLogging(this IApplicationBuilder app)` koja koristi `UseMiddleware<RequestLoggingMiddleware>()`.
-7. Registrujte middleware **jednom** u `Program.cs`, pre izvršavanja endpoint-a.
+1. Create a `RequestLoggingMiddleware` class in a separate file.
+2. Receive `RequestDelegate` and `ILogger<RequestLoggingMiddleware>` through the constructor.
+3. In `InvokeAsync(HttpContext context)`, log the request path as a structured log message before calling the next component.
+4. Call `await _next(context)`.
+5. After that, log the HTTP status of the response.
+6. Create an extension method `UseRequestLogging(this IApplicationBuilder app)` that uses `UseMiddleware<RequestLoggingMiddleware>()`.
+7. Register the middleware **once** in `Program.cs`, before the endpoints execute.
 
-**Kriterijum uspeha:** `GET /orders/confirm` vraća 200, a konzola sadrži približno `Before /orders/confirm` i `After 200`.
+**Success criterion:** `GET /orders/confirm` returns 200, and the console contains roughly `Before /orders/confirm` and `After 200`.
 
-## Zadatak B — Redosled izvršavanja (oko 10 min)
+## Task B — Execution order (about 10 min)
 
-1. Posle `app.UseRequestLogging()` dodajte drugi, **inline** middleware.
-2. Njegove poruke nazovite `Inner before` i `Inner after`; između njih pozovite `next`.
-3. **Pre pokretanja** napišite redosled četiri middleware poruke.
-4. Pozovite `GET /orders/confirm`, proverite konzolu i uporedite rezultat sa predviđanjem.
+1. After `app.UseRequestLogging()`, add a second, **inline** middleware.
+2. Name its messages `Inner before` and `Inner after`; call `next` between them.
+3. **Before running**, write down the order of the four middleware messages.
+4. Call `GET /orders/confirm`, check the console, and compare the result with your prediction.
 
-**Kriterijum uspeha:** možete da objasnite zašto se poruka `Inner after` pojavljuje pre spoljašnje `After 200` poruke. Logovi iz `OrderService` mogu se pojaviti između njih.
+**Success criterion:** you can explain why `Inner after` appears before the outer `After 200` message. Logs from `OrderService` may appear between them.
 
-**Napomena:** linije `Email: ...` i `SMS: ...` ispisuje `Console.WriteLine`, koji piše odmah, dok logger piše preko pozadinskog reda. Zato se u konzoli mogu pojaviti na drugom mestu nego što očekujete. Poredite samo log poruke middleware-a.
+**Note:** the `Email: ...` and `SMS: ...` lines are written by `Console.WriteLine`, which writes immediately, while the logger writes through a background queue. That is why they may appear in the console in a different place than you expect. Compare only the middleware log messages.
 
-## Zadatak C — Verifikacija (oko 6 min)
+## Task C — Verification (about 6 min)
 
 ```bash
 curl -i http://localhost:5100/orders/confirm
@@ -64,60 +64,60 @@ curl -i http://localhost:5100/di/lifetime
 curl -i http://localhost:5100/health
 ```
 
-Proverite: oba ključna endpoint-a rade, scoped `InstanceMarker` daje `Same: true` unutar zahteva, logovi imaju očekivan redosled i status 200 za uspešan zahtev.
+Check: both key endpoints work, the scoped `InstanceMarker` gives `Same: true` within a request, the logs are in the expected order, and a successful request has status 200.
 
-## Ako zapnete
+## If you get stuck
 
-- `UseRequestLogging` nije dostupna: proverite namespace i `using` u `Program.cs`.
-- Nema logova: proverite poziciju `UseRequestLogging()` i da li ste restartovali aplikaciju.
-- Build ne prolazi: proverite potpis metode `InvokeAsync` i da li se poziva `_next(context)`.
-- Različiti GUID-ovi sami po sebi nisu greška. Bitno je polje `Same` i odabrani lifetime.
+- `UseRequestLogging` is not available: check the namespace and the `using` in `Program.cs`.
+- No logs: check the position of `UseRequestLogging()` and whether you restarted the application.
+- The build fails: check the `InvokeAsync` signature and whether `_next(context)` is called.
+- Different GUIDs are not an error in themselves. What matters is the `Same` field and the chosen lifetime.
 
-Referentno rešenje biće objavljeno u ovom folderu kao `Resenje/` posle lab-a. Niko ne zavisi od završetka ove vežbe da bi započeo Modul 2.
+The reference solution is in `Resenje/` in this folder. Nobody depends on finishing this exercise to start Module 2.
 
-## Opciono (12:00–13:00)
+## Optional (12:00–13:00)
 
-- **A — Short-circuit:** middleware sam odgovara na `GET /blocked` sa 403 i ne prosleđuje zahtev dalje.
-- **B — Jedna vrednost iz konfiguracije:** `GET /notifications/channel` vraća samo aktivni kanal.
-- **C — Trajanje zahteva:** `RequestLoggingMiddleware` meri trajanje sa `Stopwatch` i loguje `{ElapsedMs}`.
-- **D — Serilog:** logovi idu u konzolu i u tekstualni fajl.
+- **A — Short-circuit:** a middleware responds to `GET /blocked` with 403 itself and does not pass the request on.
+- **B — A single configuration value:** `GET /notifications/channel` returns only the active channel.
+- **C — Request duration:** `RequestLoggingMiddleware` measures the duration with `Stopwatch` and logs `{ElapsedMs}`.
+- **D — Serilog:** logs go to the console and to a text file.
 
-Za svaki zadatak ispod postoje koraci, provera i referentno rešenje. Izaberite jedan i uradite ga do kraja. **Početno stanje** za sve: vaš `CourseApi` iz ovog lab-a ili referentno rešenje iz `Resenje/`.
+Each task below has steps, a check, and a reference solution. Pick one and finish it. **Starting state** for all of them: your `CourseApi` from this lab or the reference solution from `Resenje/`.
 
-**Svi dodatni zadaci su opcioni.** Obavezna nastava završava se u 12:00; predavač ne mora da bude prisutan do 13:00. Sutra svi koriste zasebni `HeroRegistry` starter.
+**All additional tasks are optional.** The required session ends at 12:00; the instructor does not have to be present until 13:00. Tomorrow everyone uses the separate `HeroRegistry` starter.
 
-## Opciono A — Short-circuit: middleware koji ne poziva `next` (oko 10 min)
+## Optional A — Short-circuit: a middleware that doesn't call `next` (about 10 min)
 
-**Cilj:** videti šta se dešava kada middleware sam napiše odgovor. Do sada je svaki middleware pozivao `await next(context)` i tako predavao zahtev sledećoj komponenti. Ako `next` ne pozove, zahtev se tu završava: komponente iza njega i endpoint se ne izvršavaju. To se zove *short-circuit*. Na isti način rade `UseStaticFiles` (vrati fajl) i `UseAuthorization` (vrati 401/403).
+**Goal:** see what happens when a middleware writes the response itself. So far, every middleware has called `await next(context)` and handed the request to the next component. If it doesn't call `next`, the request ends there: the components after it and the endpoint do not run. This is called a *short-circuit*. `UseStaticFiles` (returns a file) and `UseAuthorization` (returns 401/403) work the same way.
 
-U .NET Frameworku isto radi `HttpModule` koji u `BeginRequest` napiše odgovor i pozove `HttpApplication.CompleteRequest()`.
+In .NET Framework, the equivalent is an `HttpModule` that writes the response in `BeginRequest` and calls `HttpApplication.CompleteRequest()`.
 
-### Koraci
+### Steps
 
-1. **Pre koda** predvidite: koje će se od četiri poruke (`Before`, `Inner before`, `Inner after`, `After`) pojaviti za `GET /blocked`? Endpoint `/blocked` ne postoji. Koji status biste dobili bez novog middleware-a?
-2. U `Program.cs` dodajte inline middleware (`app.Use`) **posle** `app.UseRequestLogging()`, a **pre** `Inner` middleware-a iz zadatka B.
-3. Ako je `context.Request.Path` jednak `/blocked`: postavite `context.Response.StatusCode` na `StatusCodes.Status403Forbidden`, upišite tekst `Blocked by middleware` sa `context.Response.WriteAsync(...)` i izađite sa `return`, **bez** poziva `next`.
-4. Za sve ostale putanje pozovite `await next(context)`.
-5. Restartujte aplikaciju i pozovite:
+1. **Before writing code**, predict: which of the four messages (`Before`, `Inner before`, `Inner after`, `After`) will appear for `GET /blocked`? The `/blocked` endpoint doesn't exist. What status would you get without the new middleware?
+2. In `Program.cs`, add an inline middleware (`app.Use`) **after** `app.UseRequestLogging()` and **before** the `Inner` middleware from Task B.
+3. If `context.Request.Path` equals `/blocked`: set `context.Response.StatusCode` to `StatusCodes.Status403Forbidden`, write the text `Blocked by middleware` with `context.Response.WriteAsync(...)`, and exit with `return`, **without** calling `next`.
+4. For all other paths, call `await next(context)`.
+5. Restart the application and call:
 
    ```bash
    curl -i http://localhost:5100/blocked
    curl -i http://localhost:5100/orders/confirm
    ```
 
-### Provera
+### Check
 
-- `/blocked` vraća **403** i telo `Blocked by middleware`, a ne 404.
-- U konzoli su samo `Before /blocked` i `After 403`; `Inner before` i `Inner after` se ne pojavljuju.
-- `/orders/confirm` i dalje vraća 200 sa sve četiri poruke, kao pre.
+- `/blocked` returns **403** with the body `Blocked by middleware`, not 404.
+- The console shows only `Before /blocked` and `After 403`; `Inner before` and `Inner after` do not appear.
+- `/orders/confirm` still returns 200 with all four messages, as before.
 
-### Pitanja za razmišljanje
+### Questions to think about
 
-1. Zašto se `After 403` ipak pojavljuje, iako niko posle novog middleware-a nije pozvan?
-2. Šta biste videli u konzoli da ste novi middleware stavili **ispred** `app.UseRequestLogging()`?
+1. Why does `After 403` still appear, even though nothing after the new middleware was called?
+2. What would you see in the console if you had placed the new middleware **before** `app.UseRequestLogging()`?
 
 <details>
-<summary>Referentno rešenje (otvorite tek kad završite ili zapnete)</summary>
+<summary>Reference solution (open only when you're done or stuck)</summary>
 
 ```csharp
 app.UseRequestLogging();
@@ -138,49 +138,49 @@ app.Use(async (context, next) =>
 // Inner middleware from Task B stays here.
 ```
 
-**Odgovori na pitanja:**
+**Answers:**
 
-1. `RequestLoggingMiddleware` je pozvao `await _next(context)`, a taj poziv se normalno vratio, samo ranije. Posle povratka on loguje status koji je novi middleware upisao.
-2. Ništa od naših poruka. `RequestLoggingMiddleware` bi bio iza komponente koja prekida zahtev, pa se ne bi ni izvršio.
+1. `RequestLoggingMiddleware` called `await _next(context)`, and that call returned normally, just earlier. After it returns, it logs the status that the new middleware wrote.
+2. None of our messages. `RequestLoggingMiddleware` would be after the component that ends the request, so it would never run.
 
 </details>
 
-## Opciono B — Jedna vrednost iz konfiguracije (oko 10 min)
+## Optional B — A single configuration value (about 10 min)
 
-**Cilj:** pročitati vrednost iz konfiguracije u endpoint-u i videti da je ista vrednost različita u Development i Production okruženju, bez promene koda.
+**Goal:** read a configuration value in an endpoint and see that the same value differs between the Development and Production environments, without changing code.
 
-### Koraci
+### Steps
 
-1. U `Program.cs` dodajte endpoint `GET /notifications/channel`.
-2. Neka endpoint kao parametar primi `IConfiguration`; DI ga ubacuje kao i `OrderService`.
-3. Vratite JSON sa **samo jednim** poljem: `Channel`, vrednost ključa `Notifications:Channel`.
-4. Pokrenite aplikaciju na uobičajen način (F5 ili `dotnet run`, okruženje Development) i pozovite:
+1. In `Program.cs`, add the endpoint `GET /notifications/channel`.
+2. Let the endpoint receive `IConfiguration` as a parameter; DI injects it just like `OrderService`.
+3. Return JSON with **only one** field: `Channel`, the value of the `Notifications:Channel` key.
+4. Run the application the usual way (F5 or `dotnet run`, Development environment) and call:
 
    ```bash
    curl -i http://localhost:5100/notifications/channel
    ```
 
-5. Zaustavite aplikaciju i pokrenite je bez launch profila, čime okruženje postaje Production:
+5. Stop the application and run it without the launch profile, which makes the environment Production:
 
    ```bash
    dotnet run --no-launch-profile --urls http://localhost:5100
    ```
 
-   Ponovo pozovite isti URL.
+   Call the same URL again.
 
-### Provera
+### Check
 
-- Development: `{"channel":"Sms"}` (vrednost iz `appsettings.Development.json`).
-- Production: `{"channel":"Email"}` (vrednost iz `appsettings.json`).
-- U konzoli na početku piše `Hosting environment: Development`, odnosno `Production`.
+- Development: `{"channel":"Sms"}` (value from `appsettings.Development.json`).
+- Production: `{"channel":"Email"}` (value from `appsettings.json`).
+- At startup, the console shows `Hosting environment: Development` or `Production`, respectively.
 
-### Pitanja za razmišljanje
+### Questions to think about
 
-1. Zašto ne vratiti celu konfiguraciju, na primer sve parove ključ–vrednost?
-2. U PowerShell-u postavite `$env:Notifications__Channel = "Push"` i pokrenite aplikaciju iz **istog** terminala. Šta vraća endpoint i zašto?
+1. Why not return the whole configuration, for example all key–value pairs?
+2. In PowerShell, set `$env:Notifications__Channel = "Push"` and start the application from the **same** terminal. What does the endpoint return and why?
 
 <details>
-<summary>Referentno rešenje (otvorite tek kad završite ili zapnete)</summary>
+<summary>Reference solution (open only when you're done or stuck)</summary>
 
 ```csharp
 // Return a single, harmless configuration value.
@@ -188,34 +188,34 @@ app.MapGet("/notifications/channel", (IConfiguration config) =>
     Results.Ok(new { Channel = config["Notifications:Channel"] }));
 ```
 
-**Odgovori na pitanja:**
+**Answers:**
 
-1. Konfiguracija sadrži i connection string-ove, ključeve i lozinke iz user secrets ili environment varijabli. Endpoint treba da vrati samo ono što je bezbedno pokazati.
-2. `Push`. Environment varijable imaju viši prioritet od `appsettings*.json`, a `__` u imenu zamenjuje `:`. Varijablu posle uklonite sa `Remove-Item Env:Notifications__Channel`.
+1. The configuration also contains connection strings, keys, and passwords from user secrets or environment variables. An endpoint should return only what is safe to show.
+2. `Push`. Environment variables have higher priority than `appsettings*.json`, and `__` in the name replaces `:`. Remove the variable afterwards with `Remove-Item Env:Notifications__Channel`.
 
 </details>
 
-## Opciono C — Trajanje zahteva sa `Stopwatch` (oko 15 min)
+## Optional C — Request duration with `Stopwatch` (about 15 min)
 
-**Cilj:** proširiti `RequestLoggingMiddleware` tako da loguje koliko je obrada zahteva trajala. Middleware je pravo mesto za to, jer obuhvata sve što se izvršava posle njega.
+**Goal:** extend `RequestLoggingMiddleware` so it logs how long request processing took. Middleware is the right place for this, because it wraps everything that runs after it.
 
-### Koraci
+### Steps
 
-1. U `RequestLoggingMiddleware.cs` dodajte `using System.Diagnostics;`.
-2. U `InvokeAsync`, posle poruke `Before`, pokrenite merenje: `var watch = Stopwatch.StartNew();`.
-3. Poziv `await _next(context)` i poruku `After` stavite u `try` blok.
-4. U `finally` bloku zaustavite merenje i zabeležite strukturisanu poruku `Request took {ElapsedMs} ms` sa `watch.ElapsedMilliseconds`.
-5. Restartujte aplikaciju i pozovite `/orders/confirm` nekoliko puta.
+1. In `RequestLoggingMiddleware.cs`, add `using System.Diagnostics;`.
+2. In `InvokeAsync`, after the `Before` message, start measuring: `var watch = Stopwatch.StartNew();`.
+3. Put the `await _next(context)` call and the `After` message in a `try` block.
+4. In the `finally` block, stop the measurement and log the structured message `Request took {ElapsedMs} ms` with `watch.ElapsedMilliseconds`.
+5. Restart the application and call `/orders/confirm` a few times.
 
-### Provera
+### Check
 
-- Posle `After 200` pojavljuje se `Request took N ms`, gde je N nula ili pozitivan broj. Prvi zahtev je obično sporiji od ostalih.
-- HTTP odgovori su isti kao pre; middleware samo meri.
-- `dotnet build` prolazi bez upozorenja.
+- After `After 200`, `Request took N ms` appears, where N is zero or a positive number. The first request is usually slower than the rest.
+- The HTTP responses are the same as before; the middleware only measures.
+- `dotnet build` passes without warnings.
 
-### Izazov — zašto `finally`
+### Challenge — why `finally`
 
-Privremeno dodajte endpoint koji baca izuzetak:
+Temporarily add an endpoint that throws an exception:
 
 ```csharp
 app.MapGet("/boom", () =>
@@ -224,10 +224,10 @@ app.MapGet("/boom", () =>
 });
 ```
 
-Pozovite `/boom`. Koje se poruke iz `RequestLoggingMiddleware` pojavljuju? Zatim premestite log sa trajanjem iz `finally` posle `try` bloka i ponovite. Na kraju uklonite `/boom`.
+Call `/boom`. Which messages from `RequestLoggingMiddleware` appear? Then move the duration log from `finally` to after the `try` block and repeat. Finally, remove `/boom`.
 
 <details>
-<summary>Referentno rešenje (otvorite tek kad završite ili zapnete)</summary>
+<summary>Reference solution (open only when you're done or stuck)</summary>
 
 `Middleware/RequestLoggingMiddleware.cs`:
 
@@ -270,65 +270,65 @@ public sealed class RequestLoggingMiddleware
 }
 ```
 
-**Odgovor na izazov:** za `/boom` se pojavljuju `Before /boom` i `Request took N ms`, ali ne i `After`. Izuzetak izlazi iz `await _next(context)`, pa se ostatak `try` bloka preskače, a `finally` se izvršava uvek. Zatim izuzetak hvata developer exception page, koji ASP.NET Core u Development okruženju sam stavlja na početak pipeline-a, i vraća 500. Bez `finally` ne bi bilo ni poruke o trajanju, a upravo spori i neuspešni zahtevi su oni čije trajanje želimo da vidimo.
+**Answer to the challenge:** for `/boom`, `Before /boom` and `Request took N ms` appear, but not `After`. The exception propagates out of `await _next(context)`, so the rest of the `try` block is skipped, while `finally` always runs. The exception is then caught by the developer exception page, which ASP.NET Core places at the start of the pipeline in the Development environment, and it returns 500. Without `finally` there would be no duration message either, and slow and failed requests are exactly the ones whose duration we want to see.
 
 </details>
 
-## Opciono D — Serilog: konzola i tekstualni fajl (oko 25 min, može i kao domaći)
+## Optional D — Serilog: console and text file (about 25 min, can also be homework)
 
-**Cilj:** logovi idu u konzolu i u fajl preko Serilog-a, a `OrderService` i `RequestLoggingMiddleware` se ne menjaju ni u jednom redu. Kod piše u `ILogger<T>`, a provider odlučuje gde zapis završava.
+**Goal:** logs go to the console and to a file through Serilog, while `OrderService` and `RequestLoggingMiddleware` don't change a single line. The code writes to `ILogger<T>`, and the provider decides where the entry ends up.
 
-**Početno stanje:** vaš `CourseApi` iz ovog lab-a ili referentno rešenje iz `Resenje/`. Za NuGet paket je potreban internet.
+**Starting state:** your `CourseApi` from this lab or the reference solution from `Resenje/`. The NuGet package requires internet access.
 
-### Koraci
+### Steps
 
-1. U folderu projekta dodajte paket (u Visual Studiu: desni klik na projekat → **Manage NuGet Packages** → `Serilog.AspNetCore`):
+1. In the project folder, add the package (in Visual Studio: right-click the project → **Manage NuGet Packages** → `Serilog.AspNetCore`):
 
    ```bash
    dotnet add package Serilog.AspNetCore
    ```
 
-   Proveren je `Serilog.AspNetCore` 10.0.0. Paket već sadrži Console i File sink i čitanje podešavanja iz konfiguracije, pa drugi paketi nisu potrebni.
+   Verified with `Serilog.AspNetCore` 10.0.0. The package already includes the Console and File sinks and reading settings from configuration, so no other packages are needed.
 
-2. U `Program.cs` dodajte `using Serilog;`. Odmah posle `WebApplication.CreateBuilder(args)` registrujte Serilog preko `builder.Services.AddSerilog(...)`, tako da podešavanja čita iz konfiguracije sa `ReadFrom.Configuration(builder.Configuration)`.
-3. U `appsettings.json` dodajte sekciju `"Serilog"`:
-   - `MinimumLevel`: `Default` je `Information`, a `Microsoft.AspNetCore` je `Warning`, isto kao u postojećoj sekciji `Logging`
-   - `WriteTo`: niz sa dva sink-a, `Console` i `File`; File sink dobija `Args` sa `"path": "logs/courseapi-.log"` i `"rollingInterval": "Day"`
-4. Pokrenite aplikaciju (F5 ili `dotnet run`) i pozovite:
+2. In `Program.cs`, add `using Serilog;`. Right after `WebApplication.CreateBuilder(args)`, register Serilog through `builder.Services.AddSerilog(...)` so that it reads its settings from configuration with `ReadFrom.Configuration(builder.Configuration)`.
+3. In `appsettings.json`, add a `"Serilog"` section:
+   - `MinimumLevel`: `Default` is `Information` and `Microsoft.AspNetCore` is `Warning`, same as in the existing `Logging` section
+   - `WriteTo`: an array with two sinks, `Console` and `File`; the File sink gets `Args` with `"path": "logs/courseapi-.log"` and `"rollingInterval": "Day"`
+4. Run the application (F5 or `dotnet run`) and call:
 
    ```bash
    curl -i http://localhost:5100/orders/42/confirm
    ```
 
-### Provera
+### Check
 
-- Konzola ima Serilog format, na primer `[10:15:02 INF] Before /orders/42/confirm`.
-- U folderu projekta postoji `logs/courseapi-YYYYMMDD.log`; datum u ime dodaje `rollingInterval`. U fajlu su `Before /orders/42/confirm`, `Order 42 confirmed` i `After 200`, sa punim datumom i vremenom.
-- `OrderService` i middleware su nepromenjeni, a `dotnet build` prolazi bez upozorenja.
+- The console uses the Serilog format, for example `[10:15:02 INF] Before /orders/42/confirm`.
+- The project folder contains `logs/courseapi-YYYYMMDD.log`; `rollingInterval` adds the date to the name. The file contains `Before /orders/42/confirm`, `Order 42 confirmed` and `After 200`, with the full date and time.
+- `OrderService` and the middleware are unchanged, and `dotnet build` passes without warnings.
 
-### Izazov — strukturisani log u JSON-u
+### Challenge — structured log in JSON
 
-Dodajte **drugi** File sink sa putanjom `logs/courseapi-.json` i formatterom `"Serilog.Formatting.Compact.CompactJsonFormatter, Serilog.Formatting.Compact"` (ključ `formatter` u `Args`). Ponovo pozovite `/orders/42/confirm`.
+Add a **second** File sink with the path `logs/courseapi-.json` and the formatter `"Serilog.Formatting.Compact.CompactJsonFormatter, Serilog.Formatting.Compact"` (the `formatter` key in `Args`). Call `/orders/42/confirm` again.
 
-**Provera:** red za tu porudžbinu sadrži `"@mt":"Order {OrderId} confirmed"`, `"OrderId":42` i `"RequestPath":"/orders/42/confirm"`. `OrderId` je zasebno polje po kom se može pretraživati, a ne samo deo teksta. Zato se u message template-u koristi `{OrderId}`, a ne interpolacija.
+**Check:** the line for that order contains `"@mt":"Order {OrderId} confirmed"`, `"OrderId":42` and `"RequestPath":"/orders/42/confirm"`. `OrderId` is a separate, searchable field, not just part of the text. That is why the message template uses `{OrderId}` instead of interpolation.
 
-### Pitanja za razmišljanje
+### Questions to think about
 
-1. U `appsettings.Development.json` promenite `Logging:LogLevel:Default` u `Warning` i restartujte aplikaciju. Da li su Information logovi nestali? Zašto?
-2. U JSON redu postoji `RequestPath`, iako ga niste logovali. Odakle dolazi?
-3. Linija `SMS: Order 42 confirmed` sada stoji tačno između `Order 42 confirmed` i `Inner after`, a sa ugrađenim loggerom mogla je da se pojavi na drugom mestu. Šta se promenilo?
+1. In `appsettings.Development.json`, change `Logging:LogLevel:Default` to `Warning` and restart the application. Did the Information logs disappear? Why?
+2. The JSON line contains `RequestPath`, even though you didn't log it. Where does it come from?
+3. The `SMS: Order 42 confirmed` line now sits exactly between `Order 42 confirmed` and `Inner after`, while with the built-in logger it could appear elsewhere. What changed?
 
-### Ako zapnete
+### If you get stuck
 
-- **`AddSerilog` ne postoji:** nedostaje `using Serilog;` ili paket nije dodat (proverite `PackageReference` u `.csproj`).
-- **Nema fajla, a nema ni greške:** Serilog tiho preskače sink sa pogrešnim imenom (na primer `"Files"`). Proverite da je `WriteTo` niz i da piše `"Name": "File"`.
-- **Fajl je na neočekivanom mestu:** relativna putanja `logs/...` računa se od radnog foldera. F5 i `dotnet run` iz foldera projekta prave ga u folderu projekta.
-- **Logovi u Git-u:** `logs/` je već u `.gitignore` ovog repozitorijuma.
+- **`AddSerilog` doesn't exist:** `using Serilog;` is missing or the package wasn't added (check the `PackageReference` in the `.csproj`).
+- **No file and no error:** Serilog silently skips a sink with a wrong name (for example `"Files"`). Check that `WriteTo` is an array and that it says `"Name": "File"`.
+- **The file is in an unexpected place:** the relative path `logs/...` is resolved from the working directory. F5 and `dotnet run` from the project folder create it in the project folder.
+- **Logs in Git:** `logs/` is already in this repository's `.gitignore`.
 
 <details>
-<summary>Referentno rešenje (otvorite tek kad završite ili zapnete)</summary>
+<summary>Reference solution (open only when you're done or stuck)</summary>
 
-`Program.cs`, početak fajla; ostatak je nepromenjen:
+`Program.cs`, beginning of the file; the rest is unchanged:
 
 ```csharp
 using CourseApi.Extensions;
@@ -340,7 +340,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSerilog(logger => logger.ReadFrom.Configuration(builder.Configuration));
 ```
 
-`appsettings.json`, zajedno sa izazovom (drugi File sink):
+`appsettings.json`, including the challenge (second File sink):
 
 ```json
 {
@@ -373,10 +373,10 @@ builder.Services.AddSerilog(logger => logger.ReadFrom.Configuration(builder.Conf
 }
 ```
 
-**Odgovori na pitanja:**
+**Answers:**
 
-1. Nisu. Posle `AddSerilog` nivoe određuje `Serilog:MinimumLevel`. Sekcija `Logging` važi za ugrađene providere, a oni se više ne koriste.
-2. ASP.NET Core za svaki zahtev otvara logging scope sa `RequestId` i `RequestPath`, a Serilog svojstva scope-a upisuje kao polja zapisa.
-3. Ugrađeni console logger piše preko pozadinskog reda, a Serilog Console sink piše odmah, kao i `Console.WriteLine`.
+1. No. After `AddSerilog`, the levels are set by `Serilog:MinimumLevel`. The `Logging` section applies to the built-in providers, which are no longer used.
+2. ASP.NET Core opens a logging scope with `RequestId` and `RequestPath` for every request, and Serilog writes the scope properties as fields of the entry.
+3. The built-in console logger writes through a background queue, while the Serilog Console sink writes immediately, just like `Console.WriteLine`.
 
 </details>

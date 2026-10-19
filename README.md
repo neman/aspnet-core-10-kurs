@@ -1,26 +1,27 @@
-# ASP.NET Core 10 — kurs
+# ASP.NET Core 10 — course
 
-Materijal za vežbe kursa ASP.NET Core 10 (Beograd, oktobar 2026).
+Lab materials for the ASP.NET Core 10 course (Belgrade, October 2026).
 
-## Šta je potrebno
+## Prerequisites
 
-- **.NET 10 SDK** — proveri sa `dotnet --version` (očekuje se `10.0.x`). `global.json` u korenu repozitorijuma bira .NET 10 SDK i kada imaš instaliran noviji; ako prijavi da kompatibilan SDK nije pronađen, instaliraj .NET 10 SDK.
-- editor ili IDE po izboru: Visual Studio sa podrškom za .NET 10, VS Code sa C# Dev Kit ili Rider
-- `curl` ili browser za pozive endpoint-a (na Windows PowerShell-u koristi `curl.exe`)
+- **.NET 10 SDK** — check with `dotnet --version` (expected `10.0.x`). `global.json` in the repository root selects the .NET 10 SDK even if a newer one is installed; if it reports that no compatible SDK was found, install the .NET 10 SDK.
+- an editor or IDE of your choice: Visual Studio with .NET 10 support, VS Code with C# Dev Kit, or Rider
+- `curl` or a browser to call the endpoints (in Windows PowerShell use `curl.exe`)
 
-## Struktura
+## Structure
 
-| Folder | Kada | Sadržaj |
+| Folder | When | Content |
 |---|---|---|
-| `Modul-1/Lab-01-DI/` | Dan 1, 09:45–10:15 | Dependency injection: Email/SMS izbor kroz factory i DI lifetimes |
-| `Modul-1/Lab-02-Middleware/` | Dan 1, 11:12–11:47 | Sopstveni middleware, extension metoda i redosled izvršavanja |
-| `Modul-2/Lab-01-MVC-Heroes/` | Dan 2, 09:30–10:15 | Kontroler, ViewModel, strongly typed view-ovi i layout: lista i detalji heroja |
-| `Modul-2/Lab-02-Form-Validation/` | Dan 2, 10:50–11:35 | Forma za novog heroja, validacija, antiforgery i Post/Redirect/Get |
-| `Modul-2/Optional/` | Dan 2, 12:00–13:00 | Opcioni samostalni zadaci: izmena Draft heroja, View Component, klijentska validacija, stil i statički fajlovi |
+| `Modul-1/Presentation/` | Day 1 | Module 1 slides as a single HTML file; open it in a browser, works offline |
+| `Modul-1/Lab-01-DI/` | Day 1, 09:45–10:15 | Dependency injection: Email/SMS selection through a factory, and DI lifetimes |
+| `Modul-1/Lab-02-Middleware/` | Day 1, 11:12–11:47 | Custom middleware, an extension method, and execution order |
+| `Modul-2/Lab-01-MVC-Heroes/` | Day 2, 09:30–10:15 | Controller, ViewModel, strongly typed views and layout: hero list and details |
+| `Modul-2/Lab-02-Form-Validation/` | Day 2, 10:50–11:35 | New hero form, validation, antiforgery and Post/Redirect/Get |
+| `Modul-2/Optional/` | Day 2, 12:00–13:00 | Optional self-paced tasks: editing a Draft hero, View Component, client-side validation, styling and static files |
 
-U svakom lab folderu uputstvo je u `README.md`, a projekat u podfolderu. Svaki lab počinje od sopstvenog startera, pa nijedan ne zavisi od toga da li je prethodni završen. Referentna rešenja se objavljuju u folderu `Resenje/` posle lab-a.
+Each lab folder has its instructions in `README.md` and the project in a subfolder. Every lab starts from its own starter, so none depends on whether the previous one was finished. Reference solutions are published in the `Resenje/` folder after the lab.
 
-## Pokretanje projekta
+## Running a project
 
 ```bash
 cd Modul-1/Lab-01-DI/CourseApi
@@ -28,6 +29,6 @@ dotnet build
 dotnet run
 ```
 
-Svaki projekat možeš pokrenuti i iz Visual Studia sa **F5**. I F5 i `dotnet run` koriste profil iz `Properties/launchSettings.json`, isti u svim lab-ovima: `http://localhost:5100` i `https://localhost:5101`, okruženje Development. Pošto je port isti, u jednom trenutku radi samo jedna aplikacija. Zahtevi u `.http` fajlovima idu na `http`, pa ti development sertifikat nije potreban; za `https` adresu Visual Studio pri prvom pokretanju nudi da ga označiš kao pouzdan (ili `dotnet dev-certs https --trust`). Ako aplikacija ne startuje uz poruku `Unable to configure HTTPS endpoint`, na računaru nema development sertifikata: pokreni `dotnet dev-certs https --trust`, pa ponovo pokreni aplikaciju.
+You can also run any project from Visual Studio with **F5**. Both F5 and `dotnet run` use the profile from `Properties/launchSettings.json`, which is the same in all labs: `http://localhost:5100` and `https://localhost:5101`, Development environment. Since the port is the same, only one application can run at a time. Requests in the `.http` files use `http`, so you don't need the development certificate; for the `https` address, Visual Studio offers to trust it on first run (or run `dotnet dev-certs https --trust`). If the application fails to start with `Unable to configure HTTPS endpoint`, the machine has no development certificate: run `dotnet dev-certs https --trust` and start the application again.
 
-Endpoint-i za svaki lab navedeni su u njegovom uputstvu. Aplikaciju zaustavljaš sa `Ctrl+C` (u Visual Studiu **Stop**).
+The endpoints for each lab are listed in its instructions. Stop the application with `Ctrl+C` (in Visual Studio, **Stop**).
