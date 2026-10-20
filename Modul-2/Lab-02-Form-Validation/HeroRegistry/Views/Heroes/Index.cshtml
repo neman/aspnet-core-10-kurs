@@ -1,0 +1,23 @@
+@model IReadOnlyList<HeroListItemViewModel>
+@{
+    ViewData["Title"] = "Heroes";
+}
+
+<h1>Registered heroes</h1>
+
+@* TODO Lab 02, Task 2: Add a "New hero" link to the form. *@
+@* TODO Lab 02, Task 3: Show TempData["Message"], if there is one. *@
+
+@if (Model.Count == 0)
+{
+    <p>No registered heroes yet.</p>
+}
+else
+{
+    <ul>
+        @foreach (var hero in Model)
+        {
+            <li><a asp-action="Details" asp-route-id="@hero.Id">@hero.Codename</a></li>
+        }
+    </ul>
+}

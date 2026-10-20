@@ -1,0 +1,37 @@
+@baseUrl = http://localhost:5100
+
+### Home page
+GET {{baseUrl}}/
+
+### Public list: Aurora, Sentinel; links lead to /heroes/{id}
+GET {{baseUrl}}/Heroes
+
+### Bonus 1: attribute route, Registered hero: 200
+GET {{baseUrl}}/heroes/1
+
+### Bonus 1: min(1) does not match: 404
+GET {{baseUrl}}/heroes/0
+
+### Bonus 1: the conventional route no longer reaches Details: 404
+GET {{baseUrl}}/Heroes/Details/1
+
+### Draft hero: 404 with the "Page not found" page
+GET {{baseUrl}}/heroes/3
+
+### Unknown hero: 404 with the "Page not found" page
+GET {{baseUrl}}/heroes/999
+
+### Bonus 3: search, only Aurora
+GET {{baseUrl}}/Heroes?search=aur
+
+### Bonus 3: case-insensitive, only Sentinel
+GET {{baseUrl}}/Heroes?search=SEN
+
+### Bonus 3: a Draft is not found by search either: empty list
+GET {{baseUrl}}/Heroes?search=shadow
+
+### Bonus 4: no endpoint, still 404 with the "Page not found" page
+GET {{baseUrl}}/doesnotexist
+
+### Bonus 4: opened directly: 200, there is no original status
+GET {{baseUrl}}/Home/Status/404
