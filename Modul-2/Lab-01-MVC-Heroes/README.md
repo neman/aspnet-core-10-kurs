@@ -227,12 +227,4 @@ The bonuses are independent; do any of them.
    - Create `Views/Home/Status.cshtml` with `@model int`. For `404`, show "Page not found" and a link to the hero list; for other codes, show "Something went wrong" and the code number.
 
    Check: `/Heroes/Details/3`, `/Heroes/Details/999` and `/doesnotexist` show the page in the layout, while `curl.exe -i` still returns **404** for them. Questions: why does `/doesnotexist` get the same page, even though no controller handles it? Replace `ReExecute` with `UseStatusCodePagesWithRedirects("/Home/Status/{0}")`: which status code does the browser get now, and why is that worse?
-5. **A custom Tag Helper (15–20 min).** On the hero details page, the alignment is shown in color: `Heroic` green, `Villainous` red, everything else gray.
-   - Create `TagHelpers/AlignmentBadgeTagHelper.cs`: the class inherits from `TagHelper` (namespace `Microsoft.AspNetCore.Razor.TagHelpers`) and has the property `public string Value { get; set; } = "";`.
-   - In `Process(context, output)`: `output.TagName = "span";`, `output.TagMode = TagMode.StartTagAndEndTag;`, a `style` attribute with the color (`output.Attributes.SetAttribute(...)`), and the text `output.Content.SetContent(Value);`.
-   - In `_ViewImports.cshtml`, add `@addTagHelper *, HeroRegistry`.
-   - In `Details.cshtml`, write `<alignment-badge value="@Model.Alignment" />` instead of `@Model.Alignment`.
-
-   Check: `/Heroes/Details/1` shows a green "Heroic", and View Page Source contains `<span ... style="color: ...">Heroic</span>`, without `<alignment-badge>`. Questions: where does the name `alignment-badge` come from, when you never wrote it? What would you use in MVC 5 instead of a Tag Helper?
-
 **Important:** the reference solution will be published in this folder as `Solution/` after the lab. Lab 02 starts from its own starter, so it doesn't depend on whether you finished this lab.
