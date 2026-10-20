@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] — Superhero Registry</title>
+</head>
+<body>
+    <nav>
+        <a asp-controller="Home" asp-action="Index">Home</a> |
+        <a asp-controller="Heroes" asp-action="Index">Heroes</a>
+    </nav>
+    <main>
+        @RenderBody()
+    </main>
+</body>
+</html>
