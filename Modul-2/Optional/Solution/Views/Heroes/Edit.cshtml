@@ -1,0 +1,18 @@
+@model CreateHeroInputModel
+@{
+    ViewData["Title"] = "Edit draft";
+}
+
+<h1>Edit draft</h1>
+
+@* asp-action without asp-route-id keeps the current id from the URL (ambient route value). *@
+<form asp-action="Edit" method="post">
+    <partial name="_HeroFields" />
+    <button type="submit">Save changes</button>
+</form>
+
+<p><a asp-action="Drafts">Back to drafts</a></p>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

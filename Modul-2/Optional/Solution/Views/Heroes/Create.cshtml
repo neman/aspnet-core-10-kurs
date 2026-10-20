@@ -1,0 +1,18 @@
+@model CreateHeroInputModel
+@{
+    ViewData["Title"] = "New hero";
+}
+
+<h1>New hero</h1>
+<p>A new hero is saved as Draft and is not shown in the public list.</p>
+
+<form asp-action="Create" method="post">
+    <partial name="_HeroFields" />
+    <button type="submit">Save draft</button>
+</form>
+
+<p><a asp-action="Index">Back to heroes</a></p>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
