@@ -227,4 +227,5 @@ The bonuses are independent; do any of them.
    - Create `Views/Home/Status.cshtml` with `@model int`. For `404`, show "Page not found" and a link to the hero list; for other codes, show "Something went wrong" and the code number.
 
    Check: `/Heroes/Details/3`, `/Heroes/Details/999` and `/doesnotexist` show the page in the layout, while `curl.exe -i` still returns **404** for them. Questions: why does `/doesnotexist` get the same page, even though no controller handles it? Replace `ReExecute` with `UseStatusCodePagesWithRedirects("/Home/Status/{0}")`: which status code does the browser get now, and why is that worse?
-**Important:** the reference solution will be published in this folder as `Solution/` after the lab. Lab 02 starts from its own starter, so it doesn't depend on whether you finished this lab.
+
+**Important:** the reference solution will be published in this folder as `Solution/` after the lab, and the same solution with all four bonuses as `Solution-Bonus/`. Lab 02 starts from its own starter, so it doesn't depend on whether you finished this lab.
