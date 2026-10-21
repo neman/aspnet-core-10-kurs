@@ -1,10 +1,7 @@
 // TODO Task 2: Delete this file.
 
-
 namespace HeroRegistry.Services;
 
-// Plays the role of the database. Registered as Singleton, so the data
-// survives between requests and is lost whenever the app restarts.
 public sealed class InMemoryDatabase
 {
     public object Sync { get; } = new();
@@ -19,7 +16,6 @@ public sealed class InMemoryDatabase
         var flight = new Power("Flight (memory)") { Id = 3 };
         Powers.AddRange([shield, light, flight]);
 
-        // Seed data goes through the same domain methods as everything else.
         var sentinel = new Hero(
             "Sentinel",
             "A human engineer dedicated to protecting the city.",

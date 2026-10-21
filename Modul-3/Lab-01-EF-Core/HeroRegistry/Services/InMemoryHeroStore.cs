@@ -1,10 +1,7 @@
 // TODO Task 2: Delete this file.
 
-
 namespace HeroRegistry.Services;
 
-// Unit of work for one request (Scoped), like DbContext.
-// Add/Remove are only staged; SaveChanges writes them to the shared database.
 // Teaching simplification: queried heroes are the same objects as in the database,
 // so changes made through their methods are visible before SaveChanges.
 public sealed class InMemoryHeroStore(InMemoryDatabase db) : IHeroStore

@@ -56,7 +56,7 @@ public sealed class Hero
             _powers.Add(power);
     }
 
-    // Draft -> Registered. The codename is already guaranteed by the constructor.
+    // The codename is already guaranteed by the constructor.
     public void Register()
     {
         if (Status != HeroStatus.Draft)

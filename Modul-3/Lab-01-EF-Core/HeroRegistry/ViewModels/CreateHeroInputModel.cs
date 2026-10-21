@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HeroRegistry.ViewModels;
 
-// Input model for the form: no Id, no Status, so they cannot be posted (overposting).
+// No Id and no Status, so a form cannot post them (overposting).
 public sealed class CreateHeroInputModel
 {
     [Required, StringLength(60)]
