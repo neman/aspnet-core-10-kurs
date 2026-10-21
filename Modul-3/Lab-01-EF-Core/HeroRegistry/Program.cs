@@ -14,6 +14,7 @@ builder.Services.AddDbContext<HeroDbContext>(options => options
 
 var app = builder.Build();
 
+// Serves files from wwwroot: css/site.css from Day 2, optional task D.
 app.MapStaticAssets();
 app.MapControllerRoute(
     name: "default",
