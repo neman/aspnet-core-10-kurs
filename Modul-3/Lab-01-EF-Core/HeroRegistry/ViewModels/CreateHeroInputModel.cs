@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using HeroRegistry.Models;
 
 namespace HeroRegistry.ViewModels;
 

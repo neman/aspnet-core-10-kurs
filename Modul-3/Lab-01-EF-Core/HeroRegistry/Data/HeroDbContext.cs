@@ -1,6 +1,3 @@
-using HeroRegistry.Models;
-using Microsoft.EntityFrameworkCore;
-
 namespace HeroRegistry.Data;
 
 // Demo 1: only Power is mapped so far. In Lab 1 the context also maps Hero

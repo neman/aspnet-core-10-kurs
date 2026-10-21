@@ -1,6 +1,5 @@
 // TODO Task 2: Delete this file.
 
-using HeroRegistry.Models;
 
 namespace HeroRegistry.Services;
 

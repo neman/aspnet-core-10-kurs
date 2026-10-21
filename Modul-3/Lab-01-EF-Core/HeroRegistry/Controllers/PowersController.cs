@@ -1,4 +1,3 @@
-using HeroRegistry.Models;
 using HeroRegistry.Services;
 using HeroRegistry.ViewModels;
 using Microsoft.AspNetCore.Mvc;

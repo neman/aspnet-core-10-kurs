@@ -1,6 +1,4 @@
-using HeroRegistry.Data;
 using HeroRegistry.Services;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();

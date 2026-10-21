@@ -1,6 +1,3 @@
-using HeroRegistry.Models;
-using Microsoft.EntityFrameworkCore;
-
 namespace HeroRegistry.Data;
 
 // Runs through UseSeeding: after Update-Database and after Database.Migrate().

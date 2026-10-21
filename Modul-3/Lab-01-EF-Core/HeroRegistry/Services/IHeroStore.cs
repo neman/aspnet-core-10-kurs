@@ -1,5 +1,3 @@
-using HeroRegistry.Models;
-
 namespace HeroRegistry.Services;
 
 // Shaped like EF Core's DbContext: query through Heroes and Powers,
