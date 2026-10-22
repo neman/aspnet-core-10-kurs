@@ -22,6 +22,7 @@ The course covers ASP.NET Core 10, but all lab code also runs on .NET 9, so the 
 | `Modul-2/Lab-01-MVC-Heroes/` | Day 2, 09:35–10:19 | Controller, ViewModel, strongly typed views and layout: hero list and details |
 | `Modul-2/Lab-02-Form-Validation/` | Day 2, 10:54–11:38 | New hero form, validation, antiforgery and Post/Redirect/Get |
 | `Modul-2/Optional/` | Day 2, 12:00–13:00 | Optional self-paced tasks: editing a Draft hero, View Component, client-side validation, styling and static files, an action filter |
+| `Modul-3/Presentation/` | Day 3 | Module 3 slides as a single HTML file; open it in a browser, works offline |
 | `Modul-3/Lab-01-EF-Core/` | Day 3, 09:25–10:05 | EF Core on SQL Server (LocalDB): `DbContext` as the store, mapping, migrations, `Include` |
 | `Modul-3/Lab-02-Web-API/` | Day 3, 10:38–11:18 | JSON API: the hero lifecycle, domain rules as ProblemDetails; the same API as Minimal API |
 | `Modul-3/Lab-03-SignalR/` | Day 3, 11:28–11:43 | SignalR: a hero list that updates without a refresh |
