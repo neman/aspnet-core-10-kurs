@@ -49,6 +49,30 @@ In `HeroDbContext.OnModelCreating`, next to `Power`, add the configuration for `
 
 You don't have to do anything for the private constructor, the `private set` properties or the `_powers` field: EF Core uses them by convention. Think about why the table name has to be written: without a `DbSet<Hero>` property, what would EF Core call the table?
 
+<details>
+<summary>Hint (open only if you're stuck)</summary>
+
+The same shape as the `Power` configuration above it:
+
+```csharp
+modelBuilder.Entity<Hero>(hero =>
+{
+    hero.ToTable("Heroes");
+    hero.Property(h => h.Codename).HasMaxLength(60);
+    hero.Property(h => h.OriginStory).HasMaxLength(1000);
+
+    hero.Property(h => h.Race).HasConversion<string>().HasMaxLength(20);
+    hero.Property(h => h.Alignment).HasConversion<string>().HasMaxLength(20);
+    hero.Property(h => h.Status).HasConversion<string>().HasMaxLength(20);
+
+    hero.HasMany(h => h.Powers)
+        .WithMany()
+        .UsingEntity(join => join.ToTable("HeroPowers"));
+});
+```
+
+</details>
+
 ## Task 2 — `HeroDbContext` becomes the `IHeroStore`
 
 1. `HeroDbContext` also implements `IHeroStore`: `: DbContext(options), IHeroStore`.
@@ -63,6 +87,29 @@ builder.Services.AddScoped<IHeroStore>(sp => sp.GetRequiredService<HeroDbContext
 ```
 
 4. Delete `Services/InMemoryDatabase.cs` and `Services/InMemoryHeroStore.cs`. Build: no controller should need a change.
+
+<details>
+<summary>Hint (open only if you're stuck)</summary>
+
+`Powers` and `SaveChanges()` are already there; the interface needs these members as well:
+
+```csharp
+public sealed class HeroDbContext(DbContextOptions<HeroDbContext> options)
+    : DbContext(options), IHeroStore
+{
+    public IQueryable<Hero> Heroes => Set<Hero>();
+
+    public void Add(Hero hero) => Set<Hero>().Add(hero);
+    public void Add(Power power) => Set<Power>().Add(power);
+    public void Remove(Hero hero) => Set<Hero>().Remove(hero);
+
+    // Powers, OnModelCreating: as before
+}
+```
+
+If `IHeroStore` is not found, add `using HeroRegistry.Services;` at the top of the file.
+
+</details>
 
 ## Task 3 — seed data
 
@@ -118,6 +165,17 @@ private static Power GetPower(DbContext db, string name) =>
 1. `/Heroes` → Aurora, Sentinel. The application console now shows the SQL that EF Core runs.
 2. `/Heroes/Details/2` → **where are Aurora's powers?** Explain why, then fix `Heroes` in `HeroDbContext` so that it always loads the powers.
 3. Create a new hero with the form, stop the application and start it again. The new Draft is in the `Heroes` table.
+
+<details>
+<summary>Hint (open only if you're stuck)</summary>
+
+EF Core has no lazy loading by default: a navigation like `Powers` is loaded only when the query asks for it. Look at the SQL for `/Heroes/Details/2` in the console: there is no `HeroPowers`. `Register()` also needs the powers, so the store always loads them:
+
+```csharp
+public IQueryable<Hero> Heroes => Set<Hero>().Include(h => h.Powers);
+```
+
+</details>
 
 ## Done when...
 
