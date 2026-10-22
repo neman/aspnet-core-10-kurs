@@ -1,0 +1,46 @@
+@model IReadOnlyList<HeroListItemViewModel>
+@{
+    ViewData["Title"] = "Heroes";
+}
+
+<h1>Registered heroes</h1>
+<p><a asp-action="Create">New hero</a></p>
+
+@if (TempData["Message"] is string message)
+{
+    <p role="status">@message</p>
+}
+
+@if (Model.Count == 0)
+{
+    <p>No registered heroes yet.</p>
+}
+
+<ul id="heroes">
+    @foreach (var hero in Model)
+    {
+        <li data-hero-id="@hero.Id"><a asp-action="Details" asp-route-id="@hero.Id">@hero.Codename</a></li>
+    }
+</ul>
+
+<script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@9.0.19/dist/browser/signalr.min.js"></script>
+<script>
+    const heroes = document.getElementById("heroes");
+
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/hubs/heroes")
+        .build();
+
+    connection.on("HeroRegistered", hero => {
+        const link = document.createElement("a");
+        link.href = `/Heroes/Details/${hero.id}`;
+        link.textContent = hero.codename; // text, never HTML: the codename is user input
+
+        const item = document.createElement("li");
+        item.dataset.heroId = hero.id;
+        item.append(link);
+        heroes.append(item);
+    });
+    // TODO Task 2: Add connection.on("HeroRetired", ...) that removes the <li> with that data-hero-id.
+    connection.start();
+</script>

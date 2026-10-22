@@ -1,0 +1,126 @@
+@baseUrl = http://localhost:5100
+
+### Public list: Aurora, Sentinel
+GET {{baseUrl}}/Heroes
+
+### Registered hero: 200
+GET {{baseUrl}}/Heroes/Details/2
+
+### Draft hero: 404
+GET {{baseUrl}}/Heroes/Details/3
+
+# ---------------- Web API (Demo 2) ----------------
+
+### API: public registry, Registered heroes with their powers
+GET {{baseUrl}}/api/heroes
+
+### API: one hero in any status (Shadowling is a Draft)
+GET {{baseUrl}}/api/heroes/3
+
+### API: unknown hero: 404 ProblemDetails
+GET {{baseUrl}}/api/heroes/999
+
+### API: invalid input: 400 before the action runs ([ApiController])
+POST {{baseUrl}}/api/heroes
+Content-Type: application/json
+
+{
+  "codename": "",
+  "race": "Human",
+  "alignment": 99
+}
+
+### API: register a Draft without powers: 400 (a domain rule)
+POST {{baseUrl}}/api/heroes/3/register
+
+### API: register a hero that is already Registered: 409 (the status)
+POST {{baseUrl}}/api/heroes/1/register
+
+# ---------------- Minimal API (Demo 2): the same requests ----------------
+
+### Minimal API: public registry
+GET {{baseUrl}}/api/minimal/heroes
+
+### Minimal API: unknown hero: 404
+GET {{baseUrl}}/api/minimal/heroes/999
+
+### Minimal API: invalid input: 400 from ValidationFilter
+POST {{baseUrl}}/api/minimal/heroes
+Content-Type: application/json
+
+{
+  "codename": "",
+  "race": "Human",
+  "alignment": 99
+}
+
+### Minimal API: register a hero that is already Registered: 409, same handler
+POST {{baseUrl}}/api/minimal/heroes/1/register
+
+### OpenAPI document
+GET {{baseUrl}}/openapi/v1.json
+
+# ---------------- Lab 2 ----------------
+# Powers in the database: 1 Shield, 2 Light, 3 Flight.
+# {{newHero.response.body.$.id}} is the id from the 201 response of the request named newHero.
+# If your client doesn't support request variables, use that id directly.
+
+### Create a Draft: 201 + Location
+# @name newHero
+POST {{baseUrl}}/api/heroes
+Content-Type: application/json
+
+{
+  "codename": "Nightwatch",
+  "originStory": "A night guard who protects the old harbor district.",
+  "race": "Human",
+  "alignment": "Heroic"
+}
+
+### Task 2: add Shield: 200, powers ["Shield"]
+POST {{baseUrl}}/api/heroes/{{newHero.response.body.$.id}}/powers/1
+
+### Task 2: unknown power: 404
+POST {{baseUrl}}/api/heroes/{{newHero.response.body.$.id}}/powers/999
+
+### Register: 200, status Registered
+POST {{baseUrl}}/api/heroes/{{newHero.response.body.$.id}}/register
+
+### Task 4: delete a Registered hero: 409
+DELETE {{baseUrl}}/api/heroes/{{newHero.response.body.$.id}}
+
+### Task 3: retire: 200, status Retired
+POST {{baseUrl}}/api/heroes/{{newHero.response.body.$.id}}/retire
+
+### Task 3: retire again: 409
+POST {{baseUrl}}/api/heroes/{{newHero.response.body.$.id}}/retire
+
+### Task 3: a Retired hero is read-only, add a power: 409
+POST {{baseUrl}}/api/heroes/{{newHero.response.body.$.id}}/powers/2
+
+### Task 3: retire a Draft: 409
+POST {{baseUrl}}/api/heroes/3/retire
+
+### Task 1: a Draft with a forbidden phrase: 201
+# @name chosenOne
+POST {{baseUrl}}/api/heroes
+Content-Type: application/json
+
+{
+  "codename": "Prophecy",
+  "originStory": "The Chosen One of an ancient order of guardians.",
+  "race": "Human",
+  "alignment": "Heroic"
+}
+
+### Task 1: add Light: 200
+POST {{baseUrl}}/api/heroes/{{chosenOne.response.body.$.id}}/powers/2
+
+### Task 1: register: 400, the story contains "chosen one"
+POST {{baseUrl}}/api/heroes/{{chosenOne.response.body.$.id}}/register
+
+### Task 4: delete the Draft: 204
+DELETE {{baseUrl}}/api/heroes/{{chosenOne.response.body.$.id}}
+
+### Task 4: it is gone: 404
+GET {{baseUrl}}/api/heroes/{{chosenOne.response.body.$.id}}
