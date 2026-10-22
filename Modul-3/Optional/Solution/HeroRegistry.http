@@ -1,0 +1,204 @@
+@baseUrl = http://localhost:5100
+
+### Public list: Aurora, Sentinel
+GET {{baseUrl}}/Heroes
+
+### Registered hero: 200
+GET {{baseUrl}}/Heroes/Details/2
+
+### Draft hero: 404
+GET {{baseUrl}}/Heroes/Details/3
+
+# ---------------- Web API (Demo 2) ----------------
+
+### API: public registry, Registered heroes with their powers
+GET {{baseUrl}}/api/heroes
+
+### API: one hero in any status (Shadowling is a Draft)
+GET {{baseUrl}}/api/heroes/3
+
+### API: unknown hero: 404 ProblemDetails
+GET {{baseUrl}}/api/heroes/999
+
+### API: invalid input: 400 before the action runs ([ApiController])
+POST {{baseUrl}}/api/heroes
+Content-Type: application/json
+
+{
+  "codename": "",
+  "race": "Human",
+  "alignment": 99
+}
+
+### API: register a Draft without powers: 400 (a domain rule)
+POST {{baseUrl}}/api/heroes/3/register
+
+### API: register a hero that is already Registered: 409 (the status)
+POST {{baseUrl}}/api/heroes/1/register
+
+# ---------------- Minimal API (Demo 2): the same requests ----------------
+
+### Minimal API: public registry
+GET {{baseUrl}}/api/minimal/heroes
+
+### Minimal API: unknown hero: 404
+GET {{baseUrl}}/api/minimal/heroes/999
+
+### Minimal API: invalid input: 400 from ValidationFilter
+POST {{baseUrl}}/api/minimal/heroes
+Content-Type: application/json
+
+{
+  "codename": "",
+  "race": "Human",
+  "alignment": 99
+}
+
+### Minimal API: register a hero that is already Registered: 409, same handler
+POST {{baseUrl}}/api/minimal/heroes/1/register
+
+### OpenAPI document
+GET {{baseUrl}}/openapi/v1.json
+
+# ---------------- Lab 2 ----------------
+# Powers in the database: 1 Shield, 2 Light, 3 Flight.
+# {{newHero.response.body.$.id}} is the id from the 201 response of the request named newHero.
+# If your client doesn't support request variables, use that id directly.
+
+### Create a Draft: 201 + Location
+# @name newHero
+POST {{baseUrl}}/api/heroes
+Content-Type: application/json
+
+{
+  "codename": "Nightwatch",
+  "originStory": "A night guard who protects the old harbor district.",
+  "race": "Human",
+  "alignment": "Heroic"
+}
+
+### Task 2: add Shield: 200, powers ["Shield"]
+POST {{baseUrl}}/api/heroes/{{newHero.response.body.$.id}}/powers/1
+
+### Task 2: unknown power: 404
+POST {{baseUrl}}/api/heroes/{{newHero.response.body.$.id}}/powers/999
+
+### Register: 200, status Registered
+POST {{baseUrl}}/api/heroes/{{newHero.response.body.$.id}}/register
+
+### Task 4: delete a Registered hero: 409
+DELETE {{baseUrl}}/api/heroes/{{newHero.response.body.$.id}}
+
+### Task 3: retire: 200, status Retired
+POST {{baseUrl}}/api/heroes/{{newHero.response.body.$.id}}/retire
+
+### Task 3: retire again: 409
+POST {{baseUrl}}/api/heroes/{{newHero.response.body.$.id}}/retire
+
+### Task 3: a Retired hero is read-only, add a power: 409
+POST {{baseUrl}}/api/heroes/{{newHero.response.body.$.id}}/powers/2
+
+### Task 3: retire a Draft: 409
+POST {{baseUrl}}/api/heroes/3/retire
+
+### Task 1: a Draft with a forbidden phrase: 201
+# @name chosenOne
+POST {{baseUrl}}/api/heroes
+Content-Type: application/json
+
+{
+  "codename": "Prophecy",
+  "originStory": "The Chosen One of an ancient order of guardians.",
+  "race": "Human",
+  "alignment": "Heroic"
+}
+
+### Task 1: add Light: 200
+POST {{baseUrl}}/api/heroes/{{chosenOne.response.body.$.id}}/powers/2
+
+### Task 1: register: 400, the story contains "chosen one"
+POST {{baseUrl}}/api/heroes/{{chosenOne.response.body.$.id}}/register
+
+### Task 4: delete the Draft: 204
+DELETE {{baseUrl}}/api/heroes/{{chosenOne.response.body.$.id}}
+
+### Task 4: it is gone: 404
+GET {{baseUrl}}/api/heroes/{{chosenOne.response.body.$.id}}
+
+# ---------------- Lab 3: SignalR ----------------
+# First open http://localhost:5100/Heroes in a browser, then send these requests
+# and watch the list change without a refresh.
+
+### Create a Draft
+# @name liveHero
+POST {{baseUrl}}/api/heroes
+Content-Type: application/json
+
+{
+  "codename": "Skylark",
+  "originStory": "A courier who learned to fly above the rooftops of the old town.",
+  "race": "Human",
+  "alignment": "Heroic"
+}
+
+### Add Flight
+POST {{baseUrl}}/api/heroes/{{liveHero.response.body.$.id}}/powers/3
+
+### Register: Skylark appears on /Heroes (Demo 3)
+POST {{baseUrl}}/api/heroes/{{liveHero.response.body.$.id}}/register
+
+### Retire: Skylark disappears from /Heroes (Lab 3)
+POST {{baseUrl}}/api/heroes/{{liveHero.response.body.$.id}}/retire
+
+# ---------------- Optional tasks ----------------
+
+### A: a phrase that exists only in appsettings.json
+# @name labrat
+POST {{baseUrl}}/api/heroes
+Content-Type: application/json
+
+{
+  "codename": "Labrat",
+  "originStory": "Born in a secret lab accident beneath the river city.",
+  "race": "Mutant",
+  "alignment": "Neutral"
+}
+
+### A: add Light
+POST {{baseUrl}}/api/heroes/{{labrat.response.body.$.id}}/powers/2
+
+### A: register: 400, "secret lab accident"
+POST {{baseUrl}}/api/heroes/{{labrat.response.body.$.id}}/register
+
+### B: Draft heroes with Register and Delete buttons (open in a browser)
+GET {{baseUrl}}/Heroes/Drafts
+
+### D: create a Draft through the Minimal API: 201
+# @name minimalHero
+POST {{baseUrl}}/api/minimal/heroes
+Content-Type: application/json
+
+{
+  "codename": "Ironclad",
+  "originStory": "A blacksmith who forged armor strong enough to stop a tank.",
+  "race": "Human",
+  "alignment": "Heroic"
+}
+
+### D: add Shield: 200
+POST {{baseUrl}}/api/minimal/heroes/{{minimalHero.response.body.$.id}}/powers/1
+
+### D: register: 200, Registered (open /Heroes: Ironclad appears)
+POST {{baseUrl}}/api/minimal/heroes/{{minimalHero.response.body.$.id}}/register
+
+### D: delete a Registered hero: 409
+DELETE {{baseUrl}}/api/minimal/heroes/{{minimalHero.response.body.$.id}}
+
+### D: retire: 200, Retired (Ironclad disappears from /Heroes)
+POST {{baseUrl}}/api/minimal/heroes/{{minimalHero.response.body.$.id}}/retire
+
+### D: delete the Draft Shadowling: 204 (404 if B already deleted it)
+DELETE {{baseUrl}}/api/minimal/heroes/3
+
+### E: health check: Healthy
+GET {{baseUrl}}/health

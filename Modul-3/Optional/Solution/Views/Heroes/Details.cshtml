@@ -1,0 +1,25 @@
+@model HeroDetailsViewModel
+@{
+    ViewData["Title"] = Model.Codename;
+}
+
+<h1>@Model.Codename</h1>
+<p>@Model.OriginStory</p>
+<p><strong>Race:</strong> @Model.Race · <strong>Alignment:</strong> @Model.Alignment</p>
+
+@if (Model.Powers.Count > 0)
+{
+    <h2>Powers</h2>
+    <ul>
+        @foreach (var power in Model.Powers)
+        {
+            <li>@power</li>
+        }
+    </ul>
+}
+
+<form asp-action="Retire" asp-route-id="@Model.Id" method="post">
+    <button type="submit">Retire</button>
+</form>
+
+<p><a asp-action="Index">Back to heroes</a></p>
