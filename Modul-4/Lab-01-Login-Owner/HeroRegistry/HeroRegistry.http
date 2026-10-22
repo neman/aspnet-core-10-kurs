@@ -4,7 +4,7 @@
 # Create your own development tokens once (in the project folder):
 #   dotnet user-jwts create --name alice --role Admin
 #   dotnet user-jwts create --name bob
-# and paste each token below. A token is valid for three months.
+# and paste them below (valid for three months). Requests with aliceHero or bobHero need "Alice/Bob creates a Draft" sent first.
 @aliceToken = paste-alice-token-here
 @bobToken = paste-bob-token-here
 
@@ -77,7 +77,7 @@ Content-Type: application/json
   "alignment": "Neutral"
 }
 
-# ---------------- Lab 2: who may do what ----------------
+# ---------------- Lab 2: who may do what (first send "Alice creates a Draft") ----------------
 
 ### Bob (no Admin role) retires Sentinel: 403 (Demo 2)
 POST {{baseUrl}}/api/heroes/1/retire
@@ -91,8 +91,29 @@ Authorization: Bearer {{aliceToken}}
 DELETE {{baseUrl}}/api/heroes/{{aliceHero.response.body.$.id}}
 Authorization: Bearer {{bobToken}}
 
-### Alice deletes a Registered hero (Aurora): 409, the domain rule comes after authorization (Lab 2)
-DELETE {{baseUrl}}/api/heroes/2
+### Alice creates a second hero for the 409 below: 201
+# @name aliceRegistered
+POST {{baseUrl}}/api/heroes
+Authorization: Bearer {{aliceToken}}
+Content-Type: application/json
+
+{
+  "codename": "Veteran",
+  "originStory": "A retired firefighter who still answers every alarm in the city.",
+  "race": "Human",
+  "alignment": "Heroic"
+}
+
+### ...adds Shield to it: 200
+POST {{baseUrl}}/api/heroes/{{aliceRegistered.response.body.$.id}}/powers/1
+Authorization: Bearer {{aliceToken}}
+
+### ...and registers it: 200, Registered
+POST {{baseUrl}}/api/heroes/{{aliceRegistered.response.body.$.id}}/register
+Authorization: Bearer {{aliceToken}}
+
+### Alice deletes her Registered hero: 409, the domain rule comes after authorization (Lab 2)
+DELETE {{baseUrl}}/api/heroes/{{aliceRegistered.response.body.$.id}}
 Authorization: Bearer {{aliceToken}}
 
 ### Alice deletes her own Draft: 204 (Lab 2)
