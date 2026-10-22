@@ -7,6 +7,13 @@
 ## Before you start
 
 - **LocalDB.** In a terminal: `sqllocaldb start MSSQLLocalDB` prints `LocalDB instance "MSSQLLocalDB" started.` You can also connect from SQL Server Management Studio: server `(localdb)\MSSQLLocalDB`, Windows Authentication. It is installed with the Visual Studio workload *ASP.NET and web development*. If it is missing, work in a pair and install *SQL Server Express LocalDB* later from the Visual Studio Installer (Individual components).
+- **No LocalDB, but SQL Server is installed:** in `appsettings.json`, change only `Server=` and add `TrustServerCertificate=True`. The server name is `localhost` for a default instance or `localhost\SQLEXPRESS` for SQL Server Express (in JSON the backslash is doubled). In SQL Server Object Explorer and Management Studio, connect to the same server.
+
+  ```json
+  "HeroRegistry": "Server=localhost\\SQLEXPRESS;Database=HeroRegistry_Lab1;Trusted_Connection=True;TrustServerCertificate=True"
+  ```
+
+  Run `git restore appsettings.json` before the next `git pull`.
 - **Package Manager Console:** Tools → NuGet Package Manager → Package Manager Console, *Default project*: `HeroRegistry`. Commands like `Add-Migration` and `Update-Database` are the same as in EF6.
 - **Without Visual Studio:** `dotnet tool install --global dotnet-ef --version 9.0.21`, then `dotnet ef migrations add ...` and `dotnet ef database update` from the project folder.
 - **Don't update the EF Core packages to 10.x.** EF Core 10 needs .NET 10, and the project targets `net9.0`.
