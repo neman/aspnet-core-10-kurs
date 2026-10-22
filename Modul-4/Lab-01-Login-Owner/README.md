@@ -37,12 +37,51 @@ Every hero has an owner: the user who created it. The owner comes from the signe
 
 ## Task 1 — the owner in the domain
 
-1. `Models/Hero.cs`: a property `public string OwnerName { get; private set; } = "";` and a new **first** constructor parameter `string ownerName`. An empty owner throws `BusinessRuleException("A hero needs an owner.")`.
+1. `Models/Hero.cs`: a property `public string OwnerName { get; private set; } = null!;` (`null!` only tells the compiler that EF Core or the constructor always sets it; there is no default owner) and a new **first** constructor parameter `string ownerName`. An empty owner throws `BusinessRuleException("A hero needs an owner.")`.
 2. `Models/HeroQueries.cs`: an extension `OwnedBy(this IQueryable<Hero> heroes, string ownerName)`.
 3. `Data/HeroDbContext.cs`: `hero.Property(h => h.OwnerName).HasMaxLength(60);`
 4. `Data/HeroSeed.cs`: the three seed heroes belong to `"alice"`.
 5. The build now fails in three places (MVC Create, API Create, Minimal API Create): pass `"alice"` for the moment, so you can run the migration. Task 2 replaces it.
 6. `Add-Migration AddHeroOwner`, then `Update-Database`. Existing heroes get an empty `OwnerName`.
+
+<details>
+<summary>Hint (open only if you're stuck)</summary>
+
+`Models/Hero.cs`, the constructor and the new property:
+
+```csharp
+public Hero(
+    string ownerName,
+    string codename,
+    string originStory,
+    HeroRace race,
+    HeroAlignment alignment)
+{
+    if (string.IsNullOrWhiteSpace(ownerName))
+        throw new BusinessRuleException("A hero needs an owner.");
+
+    OwnerName = ownerName;
+    SetDetails(
+        codename,
+        originStory,
+        race,
+        alignment);
+    Status = HeroStatus.Draft;
+}
+
+public string OwnerName { get; private set; } = null!;
+```
+
+`Models/HeroQueries.cs`:
+
+```csharp
+public static IQueryable<Hero> OwnedBy(this IQueryable<Hero> heroes, string ownerName) =>
+    heroes.Where(h => h.OwnerName == ownerName);
+```
+
+`Data/HeroSeed.cs`: `"alice"` as the first argument of each `new Hero(...)`.
+
+</details>
 
 ## Task 2 — the owner is the signed-in user
 
@@ -52,9 +91,75 @@ The name of the signed-in user is `User.Identity!.Name!` in a controller (the `N
 2. `Api/HeroEndpoints.cs`, the `MapPost("/")` endpoint: add a parameter `ClaimsPrincipal user` to the lambda (`using System.Security.Claims;`) and pass `user.Identity!.Name!`. Then protect the endpoint: `.RequireAuthorization()` after `.AddEndpointFilter<...>()`. That is the Minimal API form of `[Authorize]`.
 3. `Api/HeroContracts.cs`: add `string Owner` to `HeroResponse` (after `Id`) and map it from `hero.OwnerName`, so a client sees who owns a hero.
 
+<details>
+<summary>Hint (open only if you're stuck)</summary>
+
+`HeroesController.Create` (POST); the API controller is the same with `request` instead of `input`:
+
+```csharp
+// The owner comes from the cookie, never from the form.
+store.Add(new Hero(
+    User.Identity!.Name!,
+    input.Codename,
+    input.OriginStory ?? "",
+    input.Race!.Value,
+    input.Alignment!.Value));
+```
+
+`Api/HeroEndpoints.cs`:
+
+```csharp
+heroes.MapPost("/", async (
+    CreateHeroRequest request,
+    ClaimsPrincipal user,
+    IHeroStore store) =>
+{
+    var hero = new Hero(
+        user.Identity!.Name!,
+        request.Codename,
+        request.OriginStory ?? "",
+        request.Race!.Value,
+        request.Alignment!.Value);
+    // ... as before
+})
+.AddEndpointFilter<ValidationFilter<CreateHeroRequest>>()
+.RequireAuthorization();
+```
+
+`Api/HeroContracts.cs`:
+
+```csharp
+public sealed record HeroResponse(
+    int Id,
+    string Owner,
+    string Codename,
+    // ... as before
+{
+    public static HeroResponse From(Hero hero) => new(
+        hero.Id, hero.OwnerName, hero.Codename, /* ... as before */);
+}
+```
+
+</details>
+
 ## Task 3 — every write needs a user
 
 `[Authorize]` on `Register`, `AddPower`, `Retire` and `Delete` in `HeroesApiController`, on the `register` endpoint in `HeroEndpoints` (`.RequireAuthorization()`), and on both `Create` actions in `PowersController`. Reads (`GET`) stay anonymous.
+
+<details>
+<summary>Hint (open only if you're stuck)</summary>
+
+The same pattern on every action that changes data:
+
+```csharp
+[Authorize]
+[HttpPost("{id:int}/register")]
+public async Task<ActionResult<HeroResponse>> Register(int id)
+```
+
+`Microsoft.AspNetCore.Authorization` is the namespace for `[Authorize]`. In `HeroEndpoints.cs`, `.RequireAuthorization()` goes at the end of the `register` endpoint, after the closing `})`.
+
+</details>
 
 ## Task 4 — My drafts
 
@@ -62,6 +167,49 @@ The name of the signed-in user is `User.Identity!.Name!` in a controller (the `N
 2. `Views/Heroes/Drafts.cshtml`: a heading, the `TempData["Message"]` paragraph (copy it from `Index.cshtml`), "No drafts yet." when the list is empty, and a `<ul>` of codenames.
 3. `Create` (POST) redirects to `Drafts` instead of `Index`.
 4. `Views/Shared/_Layout.cshtml`: a link "My drafts" inside the `@if (User.Identity?.IsAuthenticated == true)` block, before the user name.
+
+<details>
+<summary>Hint (open only if you're stuck)</summary>
+
+`HeroesController`:
+
+```csharp
+[Authorize]
+[HttpGet]
+public IActionResult Drafts()
+{
+    var drafts = store.Heroes.OwnedBy(User.Identity!.Name!).Drafts()
+        .Select(h => new HeroListItemViewModel(h.Id, h.Codename))
+        .ToList();
+    return View(drafts);
+}
+```
+
+`Views/Heroes/Drafts.cshtml`, the list part:
+
+```html
+@model IReadOnlyList<HeroListItemViewModel>
+
+@if (Model.Count == 0)
+{
+    <p>No drafts yet.</p>
+}
+
+<ul>
+    @foreach (var hero in Model)
+    {
+        <li>@hero.Codename</li>
+    }
+</ul>
+```
+
+`_Layout.cshtml`, inside the `@if` block:
+
+```html
+<a asp-controller="Heroes" asp-action="Drafts">My drafts</a>
+```
+
+</details>
 
 ## Check
 
