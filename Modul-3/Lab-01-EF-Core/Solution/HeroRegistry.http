@@ -1,0 +1,25 @@
+@baseUrl = http://localhost:5100
+
+### Home page
+GET {{baseUrl}}/
+
+### Public list: Aurora, Sentinel
+GET {{baseUrl}}/Heroes
+
+### Registered hero: 200
+GET {{baseUrl}}/Heroes/Details/1
+
+### Draft hero: 404
+GET {{baseUrl}}/Heroes/Details/3
+
+### Unknown hero: 404
+GET {{baseUrl}}/Heroes/Details/999
+
+### Lab 2: the form
+GET {{baseUrl}}/Heroes/Create
+
+### Lab 2: POST without antiforgery token: 400
+POST {{baseUrl}}/Heroes/Create
+Content-Type: application/x-www-form-urlencoded
+
+Codename=NoToken&Race=1&Alignment=1
