@@ -27,6 +27,10 @@ The course covers ASP.NET Core 10, but all lab code also runs on .NET 9, so the 
 | `Modul-3/Lab-02-Web-API/` | Day 3, 10:38–11:18 | JSON API: the hero lifecycle, domain rules as ProblemDetails; the same API as Minimal API |
 | `Modul-3/Lab-03-SignalR/` | Day 3, 11:28–11:43 | SignalR: a hero list that updates without a refresh |
 | `Modul-3/Optional/` | Day 3, 12:00–13:00 | Optional self-paced tasks: Options, lifecycle buttons in MVC, SQLite, the whole lifecycle as Minimal API, health check |
+| `Modul-4/Lab-01-Login-Owner/` | Day 4, 09:22–10:05 | Sign-in: a cookie for the browser, a JWT for the API; the hero's owner; My drafts |
+| `Modul-4/Lab-02-Authorization/` | Day 4, 10:29–11:03 | Roles and policies; resource-based authorization: only the owner deletes a Draft |
+| `Modul-4/Lab-03-Tests/` | Day 4, 11:16–11:50 | xUnit: unit tests of the domain, integration tests with `WebApplicationFactory` |
+| `Modul-4/Optional/` | Day 4, 12:00–13:00 | Optional self-paced tasks: Playwright, Worker Service and Blazor, rate limiting |
 
 Each lab folder has its instructions in `README.md` and the project in a subfolder. Every lab starts from its own starter, so none depends on whether the previous one was finished. Reference solutions are published in the `Solution/` folder after the lab.
 
