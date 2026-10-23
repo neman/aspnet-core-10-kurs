@@ -1,0 +1,21 @@
+@model IReadOnlyList<PowerListItemViewModel>
+@{
+    ViewData["Title"] = "Powers";
+}
+
+<h1>Powers</h1>
+<p><a asp-action="Create">Add a power</a></p>
+
+@if (Model.Count == 0)
+{
+    <p>No powers yet.</p>
+}
+else
+{
+    <ul>
+        @foreach (var power in Model)
+        {
+            <li>@power.Name</li>
+        }
+    </ul>
+}

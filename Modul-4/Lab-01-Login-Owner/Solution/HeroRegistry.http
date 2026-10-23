@@ -1,0 +1,124 @@
+@baseUrl = http://localhost:5100
+
+# ---------------- Day 4: tokens ----------------
+# Create your own development tokens once (in the project folder):
+#   dotnet user-jwts create --name alice --role Admin
+#   dotnet user-jwts create --name bob
+# and paste them below (valid for three months). Requests with aliceHero or bobHero need "Alice/Bob creates a Draft" sent first.
+@aliceToken = paste-alice-token-here
+@bobToken = paste-bob-token-here
+
+### Public list, still anonymous: Aurora, Sentinel
+GET {{baseUrl}}/api/heroes
+
+### Anonymous write: 401 + WWW-Authenticate: Bearer (not a login page)
+POST {{baseUrl}}/api/heroes
+Content-Type: application/json
+
+{
+  "codename": "Nobody",
+  "race": "Human",
+  "alignment": "Heroic"
+}
+
+### Alice creates a Draft: 201, "owner": "alice"
+# @name aliceHero
+POST {{baseUrl}}/api/heroes
+Authorization: Bearer {{aliceToken}}
+Content-Type: application/json
+
+{
+  "codename": "Nightwatch",
+  "originStory": "A night guard who protects the old harbor district.",
+  "race": "Human",
+  "alignment": "Heroic"
+}
+
+### Bob creates a Draft: 201, "owner": "bob"
+# @name bobHero
+POST {{baseUrl}}/api/heroes
+Authorization: Bearer {{bobToken}}
+Content-Type: application/json
+
+{
+  "codename": "Skylark",
+  "originStory": "A courier who learned to fly above the rooftops of the old town.",
+  "race": "Human",
+  "alignment": "Heroic"
+}
+
+### Alice adds Shield to her Draft: 200
+POST {{baseUrl}}/api/heroes/{{aliceHero.response.body.$.id}}/powers/1
+Authorization: Bearer {{aliceToken}}
+
+### A wrong token: 401, WWW-Authenticate: Bearer error="invalid_token"
+POST {{baseUrl}}/api/heroes
+Authorization: Bearer not-a-token
+
+### Minimal API, same rule: anonymous 401
+POST {{baseUrl}}/api/minimal/heroes
+Content-Type: application/json
+
+{
+  "codename": "Nobody",
+  "race": "Human",
+  "alignment": "Heroic"
+}
+
+### Minimal API with a token: 201, "owner": "bob"
+POST {{baseUrl}}/api/minimal/heroes
+Authorization: Bearer {{bobToken}}
+Content-Type: application/json
+
+{
+  "codename": "Minimal Bob",
+  "originStory": "Created through the Minimal API with a bearer token.",
+  "race": "Mutant",
+  "alignment": "Neutral"
+}
+
+# ---------------- Lab 2: who may do what (first send "Alice creates a Draft") ----------------
+
+### Bob (no Admin role) retires Sentinel: 403 (Demo 2)
+POST {{baseUrl}}/api/heroes/1/retire
+Authorization: Bearer {{bobToken}}
+
+### Alice (Admin) retires Sentinel: 200, Retired (Demo 2)
+POST {{baseUrl}}/api/heroes/1/retire
+Authorization: Bearer {{aliceToken}}
+
+### Bob tries to delete Alice's Draft: 403 (Lab 2)
+DELETE {{baseUrl}}/api/heroes/{{aliceHero.response.body.$.id}}
+Authorization: Bearer {{bobToken}}
+
+### Alice creates a second hero for the 409 below: 201
+# @name aliceRegistered
+POST {{baseUrl}}/api/heroes
+Authorization: Bearer {{aliceToken}}
+Content-Type: application/json
+
+{
+  "codename": "Veteran",
+  "originStory": "A retired firefighter who still answers every alarm in the city.",
+  "race": "Human",
+  "alignment": "Heroic"
+}
+
+### ...adds Shield to it: 200
+POST {{baseUrl}}/api/heroes/{{aliceRegistered.response.body.$.id}}/powers/1
+Authorization: Bearer {{aliceToken}}
+
+### ...and registers it: 200, Registered
+POST {{baseUrl}}/api/heroes/{{aliceRegistered.response.body.$.id}}/register
+Authorization: Bearer {{aliceToken}}
+
+### Alice deletes her Registered hero: 409, the domain rule comes after authorization (Lab 2)
+DELETE {{baseUrl}}/api/heroes/{{aliceRegistered.response.body.$.id}}
+Authorization: Bearer {{aliceToken}}
+
+### Alice deletes her own Draft: 204 (Lab 2)
+DELETE {{baseUrl}}/api/heroes/{{aliceHero.response.body.$.id}}
+Authorization: Bearer {{aliceToken}}
+
+### OpenAPI document
+GET {{baseUrl}}/openapi/v1.json
