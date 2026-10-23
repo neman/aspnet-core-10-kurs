@@ -1,0 +1,13 @@
+@model CreatePowerInputModel
+@{
+    ViewData["Title"] = "Add a power";
+}
+
+<h1>Add a power</h1>
+
+<form asp-action="Create" method="post">
+    <label asp-for="Name"></label>
+    <input asp-for="Name" />
+    <span asp-validation-for="Name"></span>
+    <button type="submit">Save</button>
+</form>

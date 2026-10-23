@@ -1,0 +1,25 @@
+@model LoginInputModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h1>Login</h1>
+<p>Course users: <code>alice</code> / <code>alice1</code> (Admin), <code>bob</code> / <code>bob1</code>.</p>
+
+<form asp-action="Login" method="post">
+    <div asp-validation-summary="All"></div>
+    <input type="hidden" asp-for="ReturnUrl" />
+
+    <p>
+        <label asp-for="Name"></label><br />
+        <input asp-for="Name" />
+        <span asp-validation-for="Name"></span>
+    </p>
+    <p>
+        <label asp-for="Password"></label><br />
+        <input asp-for="Password" />
+        <span asp-validation-for="Password"></span>
+    </p>
+
+    <button type="submit">Login</button>
+</form>

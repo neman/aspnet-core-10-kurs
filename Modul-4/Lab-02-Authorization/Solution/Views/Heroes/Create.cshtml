@@ -1,0 +1,41 @@
+@model CreateHeroInputModel
+@using HeroRegistry.Models
+@{
+    ViewData["Title"] = "New hero";
+}
+
+<h1>New hero</h1>
+<p>A new hero is saved as Draft and is not shown in the public list.</p>
+
+<form asp-action="Create" method="post">
+    <div asp-validation-summary="All"></div>
+
+    <p>
+        <label asp-for="Codename"></label><br />
+        <input asp-for="Codename" />
+        <span asp-validation-for="Codename"></span>
+    </p>
+    <p>
+        <label asp-for="OriginStory"></label><br />
+        <textarea asp-for="OriginStory" rows="4" cols="60"></textarea>
+        <span asp-validation-for="OriginStory"></span>
+    </p>
+    <p>
+        <label asp-for="Race"></label><br />
+        <select asp-for="Race" asp-items="Html.GetEnumSelectList<HeroRace>()">
+            <option value="">— select —</option>
+        </select>
+        <span asp-validation-for="Race"></span>
+    </p>
+    <p>
+        <label asp-for="Alignment"></label><br />
+        <select asp-for="Alignment" asp-items="Html.GetEnumSelectList<HeroAlignment>()">
+            <option value="">— select —</option>
+        </select>
+        <span asp-validation-for="Alignment"></span>
+    </p>
+
+    <button type="submit">Save draft</button>
+</form>
+
+<p><a asp-action="Index">Back to heroes</a></p>
