@@ -1,0 +1,7 @@
+@{
+    ViewData["Title"] = "Access denied";
+}
+
+<h1>Access denied</h1>
+<p>You are signed in as <strong>@User.Identity?.Name</strong>, but this action is not allowed for you.</p>
+<p><a asp-controller="Heroes" asp-action="Index">Back to heroes</a></p>

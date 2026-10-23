@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeroRegistry", "HeroRegistry\HeroRegistry.csproj", "{5F36F6F4-469B-4E87-946C-AA1EDF5FAB62}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeroRegistry.Tests", "HeroRegistry.Tests\HeroRegistry.Tests.csproj", "{12EF1F23-66FF-4B2D-A498-EE2E86A9C814}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5F36F6F4-469B-4E87-946C-AA1EDF5FAB62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F36F6F4-469B-4E87-946C-AA1EDF5FAB62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F36F6F4-469B-4E87-946C-AA1EDF5FAB62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F36F6F4-469B-4E87-946C-AA1EDF5FAB62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12EF1F23-66FF-4B2D-A498-EE2E86A9C814}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12EF1F23-66FF-4B2D-A498-EE2E86A9C814}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12EF1F23-66FF-4B2D-A498-EE2E86A9C814}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12EF1F23-66FF-4B2D-A498-EE2E86A9C814}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
